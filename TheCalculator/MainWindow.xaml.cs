@@ -21,5 +21,9 @@ namespace TheCalculator {
 		public MainWindow () {
 			InitializeComponent ();
 		}
+
+		private void InputTextChanged (object sender, RoutedEventArgs e) {
+			
+		}
 	}
 }
