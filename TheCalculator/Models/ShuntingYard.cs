@@ -8,7 +8,8 @@ namespace TheCalculator.Models {
 	public static class ShuntingYard {
 
 		public static void Main (string [] args) {
-			Debug.WriteLine (Shunt ("(cos(tan(1)) - sin(2+3))"));
+			Debug.WriteLine (Shunt ("2^sin(3)^4 * (1 - 5)"));
+			//Debug.WriteLine (Shunt ("(cos(tan(1)) - sin(2+3))"));
 			//Debug.WriteLine (Shunt ("1 - (2 + 3) * 6"));
 		}
 
@@ -97,7 +98,7 @@ namespace TheCalculator.Models {
 			//create the token type regex patterns
 			Dictionary <TokenType, string> tokenPatterns = new Dictionary <TokenType, string> ();
 			tokenPatterns [TokenType.Number] = @"^\d+";
-			tokenPatterns [TokenType.Operator] = @"^[+\-*/()]";
+			tokenPatterns [TokenType.Operator] = @"^[+\-*/()^]";
 			tokenPatterns [TokenType.Function] = @"^sin|cos|tan";
 
 			//check input against each pattern
@@ -150,7 +151,7 @@ namespace TheCalculator.Models {
 				op.Value = value;
 
 				//set the operator precedence based on the value
-				string [] precedences = { "+-", "*/", "^" };
+				string [] precedences = { "+-", "*/", "^", "sincostan" };
 
 				for (int i = 0; i < precedences.Length; i++) {
 					if (precedences [i].Contains (value)) {
