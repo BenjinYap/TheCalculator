@@ -8,10 +8,8 @@ namespace TheCalculator.Models {
 	public static class ShuntingYard {
 
 		public static void Main (string [] args) {
-			Debug.WriteLine (Shunt ("(1 - (5 + 3 - 7)) + 1"));
-			//Debug.WriteLine (Shunt ("1 + 5 - 3 * 5 / 7"));
-			//Debug.WriteLine (Shunt ("1 * 5 - 2"));
-			//Debug.WriteLine (Shunt ("1 * 5 - 2"));
+			Debug.WriteLine (Shunt ("(cos(tan(1)) - sin(2+3))"));
+			//Debug.WriteLine (Shunt ("1 - (2 + 3) * 6"));
 		}
 
 		public static string Shunt (string input) {
@@ -28,7 +26,7 @@ namespace TheCalculator.Models {
 				if (token == null) {
 					break;
 				}
-
+				
 				//remove the token from the input
 				input = ReplaceFirst (input, token.Value, "");
 
@@ -42,15 +40,19 @@ namespace TheCalculator.Models {
 						Operator op = Operator.Parse (token.Value);
 
 						//if left bracket push immediately and stop
-						if (op.Type == OperatorType.LeftBracket) {
+						if (op.Value == "(") {
 							operatorStack.Push (op);
-						} else if (op.Type == OperatorType.RightBracket) {
+						} else if (op.Value == ")") {
 							//if right bracket, pop stack into output until left bracket is found
 							while (operatorStack.Count > 0) {
 								Operator topOperator = operatorStack.Pop ();
-
-								if (topOperator.Type != OperatorType.LeftBracket) {
-									output += (char) topOperator.Type + " ";
+								
+								//found left bracket, throw away the bracket and stop
+								if (topOperator.Value == "(") {
+									break;
+								} else {
+									//not left bracket, push to output
+									output += topOperator.Value + " ";
 								}
 							}
 						} else {
@@ -59,11 +61,11 @@ namespace TheCalculator.Models {
 								Operator topOperator = operatorStack.Peek ();
 								
 								//check if top operator is higher or equal precedence
-								if (topOperator.Type != OperatorType.LeftBracket &&
+								if (topOperator.Value != "(" &&
 									op.Associativity == OperatorAssociativity.Left && op.Precedence <= topOperator.Precedence ||
 									op.Associativity == OperatorAssociativity.Right && op.Precedence < topOperator.Precedence) {
 									//pop operator into output
-									output += (char) operatorStack.Pop ().Type + " ";
+									output += operatorStack.Pop ().Value + " ";
 								} else {
 									//found lower precedence, stop
 									break;
@@ -75,12 +77,16 @@ namespace TheCalculator.Models {
 						}
 
 						break;
+					case TokenType.Function:
+						//push to stack
+						operatorStack.Push (Operator.Parse (token.Value));
+						break;
 				}
 			}
 
 			//pop all remaining operators onto stack
 			while (operatorStack.Count > 0) {
-				output += (char) operatorStack.Pop ().Type + " ";
+				output += operatorStack.Pop ().Value + " ";
 			}
 			
 			//trim the trailing space and return output
@@ -92,6 +98,7 @@ namespace TheCalculator.Models {
 			Dictionary <TokenType, string> tokenPatterns = new Dictionary <TokenType, string> ();
 			tokenPatterns [TokenType.Number] = @"^\d+";
 			tokenPatterns [TokenType.Operator] = @"^[+\-*/()]";
+			tokenPatterns [TokenType.Function] = @"^sin|cos|tan";
 
 			//check input against each pattern
 			foreach (KeyValuePair <TokenType, string> pair in tokenPatterns) {
@@ -130,20 +137,17 @@ namespace TheCalculator.Models {
 		private enum TokenType {
 			Number,
 			Operator,
-			LeftBracket,
-			RightBracket,
+			Function,
 		}
 
 		private class Operator {
-			public OperatorType Type;
+			public string Value;
 			public int Precedence;
 			public OperatorAssociativity Associativity;
 
 			public static Operator Parse (string value) {
 				Operator op = new Operator ();
-
-				//set the operator type based on the value
-				op.Type = (OperatorType) Enum.ToObject (typeof (OperatorType), (int) value [0]);
+				op.Value = value;
 
 				//set the operator precedence based on the value
 				string [] precedences = { "+-", "*/", "^" };
@@ -164,16 +168,6 @@ namespace TheCalculator.Models {
 
 				return op;
 			}
-		}
-
-		private enum OperatorType {
-			Add = '+',
-			Subtract = '-',
-			Multiply = '*',
-			Divide = '/',
-			Exponent = '^',
-			LeftBracket = '(',
-			RightBracket = ')',
 		}
 
 		private enum OperatorAssociativity {
