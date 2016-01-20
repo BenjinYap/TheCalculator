@@ -8,8 +8,8 @@ namespace TheCalculator.Models {
 	public static class ShuntingYard {
 
 		public static void Main (string [] args) {
-			//Debug.WriteLine (Shunt ("1 * 5 - 2"));
-			Debug.WriteLine (Shunt ("1 + 5 - 3 * 5 / 7"));
+			Debug.WriteLine (Shunt ("(1 - (5 + 3 - 7)) + 1"));
+			//Debug.WriteLine (Shunt ("1 + 5 - 3 * 5 / 7"));
 			//Debug.WriteLine (Shunt ("1 * 5 - 2"));
 			//Debug.WriteLine (Shunt ("1 * 5 - 2"));
 		}
@@ -41,18 +41,39 @@ namespace TheCalculator.Models {
 					case TokenType.Operator:
 						Operator op = Operator.Parse (token.Value);
 
-						//determine whether to pop stack operator into output
-						if (operatorStack.Count > 0) {
-							Operator topOperator = operatorStack.Peek ();
-							
-							if (op.Associativity == OperatorAssociativity.Left && op.Precedence <= topOperator.Precedence ||
-								op.Associativity == OperatorAssociativity.Right && op.Precedence < topOperator.Precedence) {
-								output += (char) operatorStack.Pop ().Type + " ";
+						//if left bracket push immediately and stop
+						if (op.Type == OperatorType.LeftBracket) {
+							operatorStack.Push (op);
+						} else if (op.Type == OperatorType.RightBracket) {
+							//if right bracket, pop stack into output until left bracket is found
+							while (operatorStack.Count > 0) {
+								Operator topOperator = operatorStack.Pop ();
+
+								if (topOperator.Type != OperatorType.LeftBracket) {
+									output += (char) topOperator.Type + " ";
+								}
 							}
+						} else {
+							//pop operators into output until a lower precedence operator is at the top of stack
+							while (operatorStack.Count > 0) {
+								Operator topOperator = operatorStack.Peek ();
+								
+								//check if top operator is higher or equal precedence
+								if (topOperator.Type != OperatorType.LeftBracket &&
+									op.Associativity == OperatorAssociativity.Left && op.Precedence <= topOperator.Precedence ||
+									op.Associativity == OperatorAssociativity.Right && op.Precedence < topOperator.Precedence) {
+									//pop operator into output
+									output += (char) operatorStack.Pop ().Type + " ";
+								} else {
+									//found lower precedence, stop
+									break;
+								}
+							}
+
+							//push operator to stack
+							operatorStack.Push (op);
 						}
 
-						//push operator to stack
-						operatorStack.Push (op);
 						break;
 				}
 			}
@@ -70,8 +91,8 @@ namespace TheCalculator.Models {
 			//create the token type regex patterns
 			Dictionary <TokenType, string> tokenPatterns = new Dictionary <TokenType, string> ();
 			tokenPatterns [TokenType.Number] = @"^\d+";
-			tokenPatterns [TokenType.Operator] = @"^[+\-*/]";
-			
+			tokenPatterns [TokenType.Operator] = @"^[+\-*/()]";
+
 			//check input against each pattern
 			foreach (KeyValuePair <TokenType, string> pair in tokenPatterns) {
 				Match match = Regex.Match (input, pair.Value);
@@ -109,6 +130,8 @@ namespace TheCalculator.Models {
 		private enum TokenType {
 			Number,
 			Operator,
+			LeftBracket,
+			RightBracket,
 		}
 
 		private class Operator {
@@ -149,6 +172,8 @@ namespace TheCalculator.Models {
 			Multiply = '*',
 			Divide = '/',
 			Exponent = '^',
+			LeftBracket = '(',
+			RightBracket = ')',
 		}
 
 		private enum OperatorAssociativity {
