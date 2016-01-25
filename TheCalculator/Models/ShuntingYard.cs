@@ -8,9 +8,9 @@ namespace TheCalculator.Models {
 	public static class ShuntingYard {
 
 		public static void Main (string [] args) {
-			Debug.WriteLine (Shunt ("2^sin(3)^4 * (1 - 5)"));
+			//Debug.WriteLine (Shunt ("2^sin(3)^4 * (1 - 5)"));
 			//Debug.WriteLine (Shunt ("(cos(tan(1)) - sin(2+3))"));
-			//Debug.WriteLine (Shunt ("1 - (2 + 3) * 6"));
+			Debug.WriteLine (Shunt ("1-tan((-1))"));
 		}
 
 		public static string Shunt (string input) {
@@ -57,6 +57,18 @@ namespace TheCalculator.Models {
 								}
 							}
 						} else {
+							//check if this is a minus sign for a negative number
+							if (token.Value == "-") {
+								//peek the next token
+								Token nextToken = ShuntingYard.GetToken (input);
+
+								//left bracket or number means negative number, push minus sign to output without a space after
+								if (nextToken.Value == "(" || nextToken.Type == TokenType.Number) {
+									output += token.Value;
+									break;
+								}
+							}
+
 							//pop operators into output until a lower precedence operator is at the top of stack
 							while (operatorStack.Count > 0) {
 								Operator topOperator = operatorStack.Peek ();
