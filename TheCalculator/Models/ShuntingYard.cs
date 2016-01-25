@@ -8,12 +8,16 @@ namespace TheCalculator.Models {
 	public static class ShuntingYard {
 
 		public static void Main (string [] args) {
-			//Debug.WriteLine (Shunt ("2^sin(3)^4 * (1 - 5)"));
-			//Debug.WriteLine (Shunt ("(cos(tan(1)) - sin(2+3))"));
-			Debug.WriteLine (Shunt ("1-tan((-1))"));
+			ShuntResult awd = Shunt ("1-tan((-1))");
+			
+			if (awd.Error == ShuntError.None) {
+				Debug.WriteLine (awd.Result);
+			} else {
+				Debug.WriteLine (awd.Error);
+			}
 		}
 
-		public static string Shunt (string input) {
+		public static ShuntResult Shunt (string input) {
 			input = input.Replace (" ", "").ToLower ();
 
 			Stack <Operator> operatorStack = new Stack <Operator> ();
@@ -102,8 +106,11 @@ namespace TheCalculator.Models {
 				output += operatorStack.Pop ().Value + " ";
 			}
 			
-			//trim the trailing space and return output
-			return output.TrimEnd (' ');
+			//trim the trailing space
+			output = output.TrimEnd (' ');
+
+			//return the result
+			return new ShuntResult { Error = ShuntError.None, Result = output };
 		}
 
 		private static Token GetToken (string input) {
@@ -186,6 +193,16 @@ namespace TheCalculator.Models {
 		private enum OperatorAssociativity {
 			Left,
 			Right
+		}
+
+		public struct ShuntResult {
+			public ShuntError Error;
+			public string Result;
+		}
+
+		public enum ShuntError {
+			None,
+
 		}
 	}
 }
