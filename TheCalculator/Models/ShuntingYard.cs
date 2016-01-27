@@ -8,7 +8,7 @@ namespace TheCalculator.Models {
 	public static class ShuntingYard {
 
 		public static void Main (string [] args) {
-			ShuntResult awd = Shunt ("1-tan((-1))");
+			ShuntResult awd = Shunt ("2 + (-1) - 1");
 			
 			if (awd.Error == ShuntError.None) {
 				Debug.WriteLine (awd.Result);
@@ -63,14 +63,19 @@ namespace TheCalculator.Models {
 						} else {
 							//check if this is a minus sign for a negative number
 							if (token.Value == "-") {
-								//peek the next token
-								Token nextToken = ShuntingYard.GetToken (input);
-
-								//left bracket or number means negative number, push minus sign to output without a space after
-								if (nextToken.Value == "(" || nextToken.Type == TokenType.Number) {
+								if (operatorStack.Count > 0 && operatorStack.Peek ().Value == "(") {
 									output += token.Value;
 									break;
 								}
+
+								////peek the next token
+								//Token nextToken = ShuntingYard.GetToken (input);
+
+								////left bracket or number means negative number, push minus sign to output without a space after
+								//if (nextToken.Value == "(" || nextToken.Type == TokenType.Number) {
+								//	output += token.Value;
+								//	break;
+								//}
 							}
 
 							//pop operators into output until a lower precedence operator is at the top of stack
