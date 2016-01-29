@@ -1,11 +1,25 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			Debug.WriteLine (Calcumalate ("1+1"));
+			Assert ("1-1", 0);
+			Assert ("1*3", 3);
+			Assert ("4/2", 2);
+			Assert ("2^2", 4);
+		}
+
+		public static void Assert (string input, double output) {
+			Debug.Write (input + " = " + output);
+
+			if (Calcumalate (input) == output) {
+				Debug.WriteLine (" YES");
+			} else {
+				Debug.WriteLine (" NO " + Calcumalate (input));
+			}
 		}
 
 		public static double Calcumalate (string input) {
@@ -31,15 +45,7 @@ namespace TheCalculator.Models {
 
 					if ("+-*/^".Contains (op)) {
 						double n1 = double.Parse (topStack [topStack.Count - 3]);
-						double value = 0;
-
-						switch (op) {
-							case "+":
-								value = n1 + n2;
-								break;
-						}
-
-						ReplaceStackItems (topStack, 3, value.ToString ());
+						ReplaceStackItems (topStack, 3, Solve (op, n1, n2).ToString ());
 					} else {
 
 					}
@@ -47,6 +53,27 @@ namespace TheCalculator.Models {
 			}
 
 			return double.Parse (topStack [0]);
+		}
+
+		private static double Solve (string op, double n) {
+			return double.NaN;
+		}
+
+		private static double Solve (string op, double n1, double n2) {
+			switch (op) {
+				case "+":
+					return n1 + n2;
+				case "-":
+					return n1 - n2;
+				case "*":
+					return n1 * n2;
+				case "/":
+					return n1 / n2;
+				case "^":
+					return Math.Pow (n1, n2);
+			}
+
+			return double.NaN;
 		}
 
 		private static void ReplaceStackItems (List <string> stack, int n, string value) {
