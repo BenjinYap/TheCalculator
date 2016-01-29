@@ -7,15 +7,15 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class ShuntingYard {
 
-		public static void Main (string [] args) {
-			ShuntResult awd = Shunt ("2 + (-1) - 1");
+		//public static void Main (string [] args) {
+		//	ShuntResult awd = Shunt ("-(1 - 1)");
 			
-			if (awd.Error == ShuntError.None) {
-				Debug.WriteLine (awd.Result);
-			} else {
-				Debug.WriteLine (awd.Error);
-			}
-		}
+		//	if (awd.Error == ShuntError.None) {
+		//		Debug.WriteLine (awd.Result);
+		//	} else {
+		//		Debug.WriteLine (awd.Error);
+		//	}
+		//}
 
 		public static ShuntResult Shunt (string input) {
 			input = input.Replace (" ", "").ToLower ();
@@ -47,6 +47,11 @@ namespace TheCalculator.Models {
 						//if left bracket push immediately and stop
 						if (op.Value == "(") {
 							operatorStack.Push (op);
+
+							if (input [0] == '-') {
+								input = ReplaceFirst (input, "-", "");
+								output += "-";
+							}
 						} else if (op.Value == ")") {
 							//if right bracket, pop stack into output until left bracket is found
 							while (operatorStack.Count > 0) {
@@ -62,21 +67,12 @@ namespace TheCalculator.Models {
 							}
 						} else {
 							//check if this is a minus sign for a negative number
-							if (token.Value == "-") {
-								if (operatorStack.Count > 0 && operatorStack.Peek ().Value == "(") {
-									output += token.Value;
-									break;
-								}
-
-								////peek the next token
-								//Token nextToken = ShuntingYard.GetToken (input);
-
-								////left bracket or number means negative number, push minus sign to output without a space after
-								//if (nextToken.Value == "(" || nextToken.Type == TokenType.Number) {
-								//	output += token.Value;
-								//	break;
-								//}
-							}
+							//if (token.Value == "-") {
+							//	if (operatorStack.Count > 0 && operatorStack.Peek ().Value == "(") {
+							//		output += token.Value;
+							//		break;
+							//	}
+							//}
 
 							//pop operators into output until a lower precedence operator is at the top of stack
 							while (operatorStack.Count > 0) {
