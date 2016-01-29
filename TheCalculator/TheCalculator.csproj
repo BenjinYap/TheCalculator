@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>TheCalculator.Models.ShuntingYard</StartupObject>
+    <StartupObject>TheCalculator.Models.Calcumalator</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
