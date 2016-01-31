@@ -7,7 +7,7 @@ namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
 			Assert ("1-1+1", 1);
-			Assert ("1*3", 3);
+			Assert ("1+1*3", 4);
 			Assert ("4/2", 2);
 			Assert ("2^2", 4);
 		}
@@ -16,7 +16,7 @@ namespace TheCalculator.Models {
 			if (Calcumalate (input) == output) {
 				
 			} else {
-				Debug.Write (input + " = " + output + ", GOT " + Calcumalate (input));
+				Debug.WriteLine (input + " = " + output + ", GOT " + Calcumalate (input));
 			}
 		}
 
@@ -35,6 +35,7 @@ namespace TheCalculator.Models {
 				topStack.Add (token);
 			}
 
+			//solve the remaining stack
 			topStack.Reverse ();
 
 			while (topStack.Count > 1) {
