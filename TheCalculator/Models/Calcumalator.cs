@@ -6,10 +6,10 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			Assert ("1-1", 0);
-			Assert ("1*3", 3);
-			Assert ("4/2", 2);
-			Assert ("2^2", 4);
+			Assert ("1-1+1", 1);
+			//Assert ("1*3", 3);
+			//Assert ("4/2", 2);
+			//Assert ("2^2", 4);
 		}
 
 		public static void Assert (string input, double output) {
@@ -37,14 +37,16 @@ namespace TheCalculator.Models {
 				topStack.Add (token);
 			}
 
+			topStack.Reverse ();
+
 			while (topStack.Count > 1) {
-				double n2 = double.Parse (topStack [topStack.Count - 1]);
+				double n1 = double.Parse (topStack [topStack.Count - 1]);
 
 				if (topStack.Count > 2) {
 					string op = topStack [topStack.Count - 2];
 
 					if ("+-*/^".Contains (op)) {
-						double n1 = double.Parse (topStack [topStack.Count - 3]);
+						double n2 = double.Parse (topStack [topStack.Count - 3]);
 						ReplaceStackItems (topStack, 3, Solve (op, n1, n2).ToString ());
 					} else {
 
