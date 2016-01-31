@@ -7,18 +7,16 @@ namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
 			Assert ("1-1+1", 1);
-			//Assert ("1*3", 3);
-			//Assert ("4/2", 2);
-			//Assert ("2^2", 4);
+			Assert ("1*3", 3);
+			Assert ("4/2", 2);
+			Assert ("2^2", 4);
 		}
 
 		public static void Assert (string input, double output) {
-			Debug.Write (input + " = " + output);
-
 			if (Calcumalate (input) == output) {
-				Debug.WriteLine (" YES");
+				
 			} else {
-				Debug.WriteLine (" NO " + Calcumalate (input));
+				Debug.Write (input + " = " + output + ", GOT " + Calcumalate (input));
 			}
 		}
 
