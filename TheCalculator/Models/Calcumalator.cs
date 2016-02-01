@@ -6,6 +6,12 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
+			Assert ("1", 1);
+			Assert ("1*2+2", 4);
+			Assert ("1+1*2-1*2", 1);
+			Assert ("1*2^2^2", 16);
+			Assert ("1*2+1+4/2", 5);
+			Assert ("1", 1);
 			Assert ("1-1+1", 1);
 			Assert ("1+1*3", 4);
 			Assert ("4/2", 2);
@@ -23,37 +29,191 @@ namespace TheCalculator.Models {
 		public static double Calcumalate (string input) {
 			input = input.Replace (" ", "").ToLower ();
 
-			Stack <List <string>> stacks = new Stack <List <string>> ();
-			stacks.Push (new List <string> ());
-			List <string> topStack = stacks.Peek ();
+			List <List <string>> lists = new List <List <string>> ();
+			lists.Add (new List <string> ());
+			List <string> currentList = lists [0];
+
+			string previousOperator = null;
 
 			while (input.Length > 0) {
 				string token = GetNextToken (input);
 			
 				input = ReplaceFirst (input, token, "");
 
-				topStack.Add (token);
+				if (IsOperator (token)) {
+					if (previousOperator != null) {
+						
+						if (OperatorIsHigher (previousOperator, token)) {
+							lists.Add (new List <string> ());
+							currentList = lists [lists.Count - 1];
+						}
+					}
+
+					previousOperator = token;
+				}
+
+				currentList.Add (token);
 			}
 
-			//solve the remaining stack
-			topStack.Reverse ();
+			#region djaowdjiow
+			/*
+			while (currentList.Count > 1) {
+				double n1;
+				double n2 = 0;
+				string op;
 
-			while (topStack.Count > 1) {
-				double n1 = double.Parse (topStack [topStack.Count - 1]);
+				//check if first token is a number
+				if (double.TryParse (currentList [0], out n1)) {
+					//second token is the operator
+					op = currentList [1];
 
-				if (topStack.Count > 2) {
-					string op = topStack [topStack.Count - 2];
+					//third token is the second operand
+					n2 = double.Parse (currentList [2]);
 
-					if ("+-*/^".Contains (op)) {
-						double n2 = double.Parse (topStack [topStack.Count - 3]);
-						ReplaceStackItems (topStack, 3, Solve (op, n1, n2).ToString ());
+					//remove all 3 tokens from list
+					currentList.RemoveRange (0, 3);
+				} else {  //if first token is not a number
+					//first token is an operator
+					op = currentList [0];
+					
+					if (IsBinaryOperator (op)) {
+						//get the first operand from the parent list
+						List <string> previousList = lists [lists.Count - 2];
+						n1 = double.Parse (previousList [previousList.Count - 1]);
+
+						//remove the operand from the parent list
+						previousList.RemoveAt (previousList.Count - 1);
+
+						//second operand is after operator
+						n2 = double.Parse (currentList [1]);
 					} else {
-
+						//unary operator
+						//operand is after operator
+						n1 = double.Parse (currentList [1]);
 					}
+
+					//remove operator and operand from child list
+					currentList.RemoveRange (0, 2);
+				}
+				
+				//solve the expression and put the result at the front of the list
+				double value = 0;
+
+				if (IsBinaryOperator (op)) {
+					value = Solve (op, n1, n2);
+				} else {
+					value = Solve (op, n1);
+				}
+
+				currentList.Insert (0, value.ToString ());
+			}
+
+			return double.Parse (currentList [0]);
+			 */
+			#endregion
+			
+			double result = 0;
+
+			while (lists.Count > 0) {
+				result = SolveList (lists);
+
+				if (lists.Count > 0) {
+					lists [lists.Count - 1].Add (result.ToString ());
 				}
 			}
 
-			return double.Parse (topStack [0]);
+			return result;
+		}
+
+		private static double SolveList (List <List <string>> lists) {
+			List <string> list = lists [lists.Count - 1];
+
+			while (list.Count > 1) {
+				double n1;
+				double n2 = 0;
+				string op;
+
+				//check if first token is a number
+				if (double.TryParse (list [0], out n1)) {
+					//second token is the operator
+					op = list [1];
+
+					//third token is the second operand
+					n2 = double.Parse (list [2]);
+
+					//remove all 3 tokens from list
+					list.RemoveRange (0, 3);
+				} else {  //if first token is not a number
+					//first token is an operator
+					op = list [0];
+					
+					if (IsBinaryOperator (op)) {
+						//get the first operand from the parent list
+						List <string> previousList = lists [lists.Count - 2];
+						n1 = double.Parse (previousList [previousList.Count - 1]);
+
+						//remove the operand from the parent list
+						previousList.RemoveAt (previousList.Count - 1);
+
+						//second operand is after operator
+						n2 = double.Parse (list [1]);
+					} else {
+						//unary operator
+						//operand is after operator
+						n1 = double.Parse (list [1]);
+					}
+
+					//remove operator and operand from child list
+					list.RemoveRange (0, 2);
+				}
+				
+				//solve the expression and put the result at the front of the list
+				double value = 0;
+
+				if (IsBinaryOperator (op)) {
+					value = Solve (op, n1, n2);
+				} else {
+					value = Solve (op, n1);
+				}
+
+				list.Insert (0, value.ToString ());
+			}
+			
+			double result = double.Parse (list [0]);
+
+			if (list.Count == 1) {
+				lists.RemoveAt (lists.Count - 1);
+			}
+
+			return result;
+		}
+
+		private static bool OperatorIsHigher (string previousOp, string op) {
+			List <string> prescedences = new List <string> { "+-", "*/", "^" };
+			int p = prescedences.FindIndex (a => a.Contains (op));
+			int pp = prescedences.FindIndex (a => a.Contains (previousOp));
+
+			if (p > pp) {
+				return true;
+			}
+
+			if ("sincostan^".Contains (op)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool IsNumber (string token) {
+			return Regex.IsMatch (token, @"^\d*\.?\d+$");
+		}
+
+		private static bool IsOperator (string token) {
+			return "+-*/^sincostan".Contains (token);
+		}
+
+		private static bool IsBinaryOperator (string op) {
+			return "+-*/^".Contains (op);
 		}
 
 		private static double Solve (string op, double n) {
@@ -77,9 +237,9 @@ namespace TheCalculator.Models {
 			return double.NaN;
 		}
 
-		private static void ReplaceStackItems (List <string> stack, int n, string value) {
-			stack.RemoveRange (stack.Count - n, n);
-			stack.Add (value);
+		private static void ReplaceStackItems (List <string> stack, int count, string value) {
+			stack.RemoveRange (0, count);
+			stack.Insert (0, value);
 		}
 
 		private static string GetNextToken (string input) {
