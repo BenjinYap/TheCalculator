@@ -6,23 +6,29 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			//Assert ("1", 1);
-			//Assert ("1*2+2", 4);
-			//Assert ("1+1*2-1*2", 1);
-			//Assert ("1*2^2^2", 16);
-			//Assert ("1*2+1+4/2", 5);
-			//Assert ("1", 1);
-			//Assert ("1-1+1", 1);
-			//Assert ("1+1*3", 4);
-			//Assert ("4/2", 2);
-			//Assert ("2^2", 4);
+			Assert ("1", 1);
+			Assert ("1*2+2", 4);
+			Assert ("1+1*2-1*2", 1);
+			Assert ("1*2^2^2", 16);
+			Assert ("1*2+1+4/2", 5);
+			Assert ("1", 1);
+			Assert ("1+1-1", 1);
+			Assert ("1-1+1", 1);
+			Assert ("1+1*3", 4);
+			Assert ("4/2", 2);
+			Assert ("2^2", 4);
 
 			Assert ("(1+1)*2", 4);
-
-
-			//Assert ("sin(0)", 0);
+			
+			Assert ("sin(0)", 0);
 			//Assert ("cos(1)", 0);
 			//Assert ("tan(45)", 1);
+
+			Assert ("-1+1", 0);
+			Assert ("1+-1", 0);
+			Assert ("1+-1+1", 1);
+
+			
 		}
 
 		public static void Assert (string input, double output) {
@@ -41,6 +47,7 @@ namespace TheCalculator.Models {
 			List <string> currentList = lists [0];
 
 			string previousOperator = null;
+			string previousToken = null;
 
 			while (input.Length > 0) {
 				string token = GetNextToken (input);
@@ -48,83 +55,42 @@ namespace TheCalculator.Models {
 				input = ReplaceFirst (input, token, "");
 
 				if (IsOperator (token)) {
-					if (OperatorIsHigher (previousOperator, token)) {
+					if (OperatorIsHigher (previousOperator, token) && currentList.Count > 0) {
 						lists.Add (new List <string> ());
 						currentList = lists [lists.Count - 1];
 					}
 
+					if (token == "-") {
+						if (previousToken == null || IsOperator (previousToken)) {
+							token = "_";
+
+							if (currentList.Count > 0) {
+								lists.Add (new List <string> ());
+								currentList = lists [lists.Count - 1];
+							}
+						}
+					}
+
 					previousOperator = token;
 				} else if (token == "(") {
-					lists.Add (new List <string> ());
-					currentList = lists [lists.Count - 1];
+					if (currentList.Count > 0) {
+						lists.Add (new List <string> ());
+						currentList = lists [lists.Count - 1];
+					}
+
 					continue;
 				} else if (token == ")") {
+
 					token = SolveList (lists).ToString ();
 					currentList = lists [lists.Count - 1];
 				}
 
 				currentList.Add (token);
+				previousToken = token;
 			}
 
-			#region djaowdjiow
-			/*
-			while (currentList.Count > 1) {
-				double n1;
-				double n2 = 0;
-				string op;
-
-				//check if first token is a number
-				if (double.TryParse (currentList [0], out n1)) {
-					//second token is the operator
-					op = currentList [1];
-
-					//third token is the second operand
-					n2 = double.Parse (currentList [2]);
-
-					//remove all 3 tokens from list
-					currentList.RemoveRange (0, 3);
-				} else {  //if first token is not a number
-					//first token is an operator
-					op = currentList [0];
-					
-					if (IsBinaryOperator (op)) {
-						//get the first operand from the parent list
-						List <string> previousList = lists [lists.Count - 2];
-						n1 = double.Parse (previousList [previousList.Count - 1]);
-
-						//remove the operand from the parent list
-						previousList.RemoveAt (previousList.Count - 1);
-
-						//second operand is after operator
-						n2 = double.Parse (currentList [1]);
-					} else {
-						//unary operator
-						//operand is after operator
-						n1 = double.Parse (currentList [1]);
-					}
-
-					//remove operator and operand from child list
-					currentList.RemoveRange (0, 2);
-				}
-				
-				//solve the expression and put the result at the front of the list
-				double value = 0;
-
-				if (IsBinaryOperator (op)) {
-					value = Solve (op, n1, n2);
-				} else {
-					value = Solve (op, n1);
-				}
-
-				currentList.Insert (0, value.ToString ());
-			}
-
-			return double.Parse (currentList [0]);
-			 */
-			#endregion
-			
 			double result = 0;
-
+			
 			while (lists.Count > 0) {
 				result = SolveList (lists);
 
@@ -200,7 +166,7 @@ namespace TheCalculator.Models {
 		}
 
 		private static bool OperatorIsHigher (string previousOp, string op) {
-			List <string> prescedences = new List <string> { "+-", "*/", "^" };
+			List <string> prescedences = new List <string> { "+-", "*/", "^", "_" };
 
 			//get precedence of operators if they are the basic operators
 			int p = prescedences.FindIndex (a => a.Contains (op));
@@ -210,7 +176,7 @@ namespace TheCalculator.Models {
 				return true;
 			}
 
-			if ("sincostan^".Contains (op)) {
+			if ("sincostan^_".Contains (op)) {
 				return true;
 			}
 
@@ -222,7 +188,7 @@ namespace TheCalculator.Models {
 		}
 
 		private static bool IsOperator (string token) {
-			return "+-*/^sincostan".Contains (token);
+			return "+-*/^sincostan_".Contains (token);
 		}
 
 		private static bool IsBinaryOperator (string op) {
@@ -237,6 +203,8 @@ namespace TheCalculator.Models {
 					return Math.Cos (n * Math.PI / 180);
 				case "tan":
 					return Math.Tan (n * Math.PI / 180);
+				case "_":
+					return -n;
 			}
 
 			return double.NaN;
