@@ -6,16 +6,23 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			Assert ("1", 1);
-			Assert ("1*2+2", 4);
-			Assert ("1+1*2-1*2", 1);
-			Assert ("1*2^2^2", 16);
-			Assert ("1*2+1+4/2", 5);
-			Assert ("1", 1);
-			Assert ("1-1+1", 1);
-			Assert ("1+1*3", 4);
-			Assert ("4/2", 2);
-			Assert ("2^2", 4);
+			//Assert ("1", 1);
+			//Assert ("1*2+2", 4);
+			//Assert ("1+1*2-1*2", 1);
+			//Assert ("1*2^2^2", 16);
+			//Assert ("1*2+1+4/2", 5);
+			//Assert ("1", 1);
+			//Assert ("1-1+1", 1);
+			//Assert ("1+1*3", 4);
+			//Assert ("4/2", 2);
+			//Assert ("2^2", 4);
+
+			Assert ("(1+1)*2", 4);
+
+
+			//Assert ("sin(0)", 0);
+			//Assert ("cos(1)", 0);
+			//Assert ("tan(45)", 1);
 		}
 
 		public static void Assert (string input, double output) {
@@ -41,15 +48,19 @@ namespace TheCalculator.Models {
 				input = ReplaceFirst (input, token, "");
 
 				if (IsOperator (token)) {
-					if (previousOperator != null) {
-						
-						if (OperatorIsHigher (previousOperator, token)) {
-							lists.Add (new List <string> ());
-							currentList = lists [lists.Count - 1];
-						}
+					if (OperatorIsHigher (previousOperator, token)) {
+						lists.Add (new List <string> ());
+						currentList = lists [lists.Count - 1];
 					}
 
 					previousOperator = token;
+				} else if (token == "(") {
+					lists.Add (new List <string> ());
+					currentList = lists [lists.Count - 1];
+					continue;
+				} else if (token == ")") {
+					token = SolveList (lists).ToString ();
+					currentList = lists [lists.Count - 1];
 				}
 
 				currentList.Add (token);
@@ -190,8 +201,10 @@ namespace TheCalculator.Models {
 
 		private static bool OperatorIsHigher (string previousOp, string op) {
 			List <string> prescedences = new List <string> { "+-", "*/", "^" };
+
+			//get precedence of operators if they are the basic operators
 			int p = prescedences.FindIndex (a => a.Contains (op));
-			int pp = prescedences.FindIndex (a => a.Contains (previousOp));
+			int pp = previousOp == null ? -1 : prescedences.FindIndex (a => a.Contains (previousOp));
 
 			if (p > pp) {
 				return true;
@@ -217,6 +230,15 @@ namespace TheCalculator.Models {
 		}
 
 		private static double Solve (string op, double n) {
+			switch (op) {
+				case "sin":
+					return Math.Sin (n);
+				case "cos":
+					return Math.Cos (n * Math.PI / 180);
+				case "tan":
+					return Math.Tan (n * Math.PI / 180);
+			}
+
 			return double.NaN;
 		}
 
