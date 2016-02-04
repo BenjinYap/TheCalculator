@@ -6,8 +6,8 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			Assert ("(1)", 1);
-			//Assert ("(-1)", -1);
+			Assert ("(((sin((((0)))))))", 0);
+			Assert ("(-1)", -1);
 			Assert ("-1", -1);
 
 			Assert ("1", 1);
