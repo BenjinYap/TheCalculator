@@ -271,35 +271,5 @@ namespace TheCalculator.Models {
 
 			return text.Substring (0, pos) + replace + text.Substring (pos + search.Length);
 		}
-
-		private class Token {
-			public string Value;
-			public TokenType Type;
-			public int Precedence;
-
-			public Token (string value) {
-				this.Value = value;
-				this.Type = TokenType.Operator;
-
-				//set the operator precedence based on the value
-				string [] precedences = { "+-", "*/", "^", "sincostan", "()" };
-
-				for (int i = 0; i < precedences.Length; i++) {
-					if (precedences [i].Contains (value)) {
-						this.Precedence = i;
-						break;
-					}
-				}
-			}
-
-			public override string ToString () {
-				 return this.Value;
-			}
-		}
-
-		private enum TokenType {
-			Number,
-			Operator
-		}
 	}
 }
