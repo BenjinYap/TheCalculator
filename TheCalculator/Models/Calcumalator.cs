@@ -6,6 +6,10 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
+			Assert ("(1)", 1);
+			//Assert ("(-1)", -1);
+			Assert ("-1", -1);
+
 			Assert ("1", 1);
 			Assert ("1*2+2", 4);
 			Assert ("1+1*2-1*2", 1);
@@ -82,6 +86,11 @@ namespace TheCalculator.Models {
 				} else if (token == ")") {
 
 					token = SolveList (lists).ToString ();
+
+					if (lists.Count <= 0) {
+						lists.Add (new List <string> ());
+					}
+
 					currentList = lists [lists.Count - 1];
 				}
 
