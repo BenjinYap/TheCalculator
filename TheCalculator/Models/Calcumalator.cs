@@ -6,46 +6,52 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			Assert ("(((sin((((0)))))))", 0);
-			Assert ("(-1)", -1);
-			Assert ("-1", -1);
-
-			Assert ("1", 1);
-			Assert ("1*2+2", 4);
-			Assert ("1+1*2-1*2", 1);
-			Assert ("1*2^2^2", 16);
-			Assert ("1*2+1+4/2", 5);
-			Assert ("1", 1);
-			Assert ("1+1-1", 1);
-			Assert ("1-1+1", 1);
-			Assert ("1+1*3", 4);
-			Assert ("4/2", 2);
-			Assert ("2^2", 4);
-
-			Assert ("(1+1)*2", 4);
 			
-			Assert ("sin(0)", 0);
-			//Assert ("cos(1)", 0);
-			//Assert ("tan(45)", 1);
 
-			Assert ("-1+1", 0);
-			Assert ("1+-1", 0);
-			Assert ("1+-1+1", 1);
+			//Assert ("(((sin((((0)))))))", 0);
+			//Assert ("(-1)", -1);
+			//Assert ("-1", -1);
+
+			//Assert ("1", 1);
+			//Assert ("1*2+2", 4);
+			//Assert ("1+1*2-1*2", 1);
+			//Assert ("1*2^2^2", 16);
+			//Assert ("1*2+1+4/2", 5);
+			//Assert ("1", 1);
+			//Assert ("1+1-1", 1);
+			//Assert ("1-1+1", 1);
+			//Assert ("1+1*3", 4);
+			//Assert ("4/2", 2);
+			//Assert ("2^2", 4);
+
+			//Assert ("(1+1)*2", 4);
+			
+			//Assert ("sin(0)", 0);
+			////Assert ("cos(1)", 0);
+			////Assert ("tan(45)", 1);
+
+			//Assert ("-1+1", 0);
+			//Assert ("1+-1", 0);
+			//Assert ("1+-1+1", 1);
 
 			
 		}
 
 		public static void Assert (string input, double output) {
-			if (Calcumalate (input) == output) {
+			CalcumalateResult result = Calcumalate (input);
+
+			if (result.Result == output) {
 				
 			} else {
-				Debug.WriteLine (input + " = " + output + ", GOT " + Calcumalate (input));
+				Debug.WriteLine (input + " = " + output + ", GOT " + result.Result);
 			}
 		}
 
-		public static double Calcumalate (string input) {
-			input = input.Replace (" ", "").ToLower ();
+		public static CalcumalateResult Calcumalate (string input) {
+			CalcumalateResult finalResult = new CalcumalateResult ();
 
+			input = input.Replace (" ", "").ToLower ();
+			
 			List <List <string>> lists = new List <List <string>> ();
 			lists.Add (new List <string> ());
 			List <string> currentList = lists [0];
@@ -108,7 +114,10 @@ namespace TheCalculator.Models {
 				}
 			}
 
-			return result;
+			finalResult.Error = CalcumalateError.None;
+			finalResult.Success = true;
+			finalResult.Result = result;
+			return finalResult;
 		}
 
 		private static double SolveList (List <List <string>> lists) {
@@ -271,5 +280,15 @@ namespace TheCalculator.Models {
 
 			return text.Substring (0, pos) + replace + text.Substring (pos + search.Length);
 		}
+	}
+
+	public class CalcumalateResult {
+		public bool Success;
+		public double Result;
+		public CalcumalateError Error;
+	}
+
+	public enum CalcumalateError {
+		None
 	}
 }
