@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			
+			Assert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
 
 			//Assert ("(((sin((((0)))))))", 0);
 			//Assert ("(-1)", -1);
@@ -37,6 +37,14 @@ namespace TheCalculator.Models {
 			
 		}
 
+		public static void Assert (string input, CalcumalateError output) {
+			CalcumalateResult result = Calcumalate (input);
+
+			if (result.Error != output) {
+				Debug.WriteLine (input + " = " + output.ToString () + ", GOT " + result.Error.ToString ());
+			}
+		}
+
 		public static void Assert (string input, double output) {
 			CalcumalateResult result = Calcumalate (input);
 
@@ -49,6 +57,12 @@ namespace TheCalculator.Models {
 
 		public static CalcumalateResult Calcumalate (string input) {
 			CalcumalateResult finalResult = new CalcumalateResult ();
+
+			CalcumalateError bracketError = MissingBracket (input);
+
+			if (bracketError != CalcumalateError.None) {
+				return new CalcumalateResult (bracketError);
+			}
 
 			input = input.Replace (" ", "").ToLower ();
 			
@@ -118,6 +132,19 @@ namespace TheCalculator.Models {
 			finalResult.Success = true;
 			finalResult.Result = result;
 			return finalResult;
+		}
+
+		private static CalcumalateError MissingBracket (string input) {
+			MatchCollection open = Regex.Matches (input, @"\(");
+			MatchCollection close = Regex.Matches (input, @"\)");
+			
+			if (open.Count < close.Count) {
+				return CalcumalateError.MissingOpenBracket;
+			} else if (open.Count > close.Count) {
+				return CalcumalateError.MissingCloseBracket;
+			}
+
+			return CalcumalateError.None;
 		}
 
 		private static double SolveList (List <List <string>> lists) {
@@ -277,7 +304,7 @@ namespace TheCalculator.Models {
 			if (pos < 0) {
 				return text;
 			}
-
+			
 			return text.Substring (0, pos) + replace + text.Substring (pos + search.Length);
 		}
 	}
@@ -286,9 +313,22 @@ namespace TheCalculator.Models {
 		public bool Success;
 		public double Result;
 		public CalcumalateError Error;
+
+		public CalcumalateResult () {
+
+		}
+
+		public CalcumalateResult (CalcumalateError error) {
+			if (error != CalcumalateError.None) {
+				this.Success = false;
+				this.Error = error;
+			}
+		}
 	}
 
 	public enum CalcumalateError {
-		None
+		None,
+		MissingOpenBracket,
+		MissingCloseBracket,
 	}
 }
