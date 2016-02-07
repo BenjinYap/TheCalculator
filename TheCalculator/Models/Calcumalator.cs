@@ -7,11 +7,14 @@ namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
 			Assert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
+			Assert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
+			Assert ("1&1", CalcumalateError.UnknownOperator);
+			Assert ("1_1", CalcumalateError.UnknownOperator);
 
 			//Assert ("(((sin((((0)))))))", 0);
 			//Assert ("(-1)", -1);
 			//Assert ("-1", -1);
-
+			
 			//Assert ("1", 1);
 			//Assert ("1*2+2", 4);
 			//Assert ("1+1*2-1*2", 1);
@@ -77,6 +80,10 @@ namespace TheCalculator.Models {
 				string token = GetNextToken (input);
 			
 				input = ReplaceFirst (input, token, "");
+
+				if (token == "") {
+					return new CalcumalateResult (CalcumalateError.UnknownOperator);
+				}
 
 				if (IsOperator (token)) {
 					if (OperatorIsHigher (previousOperator, token) && currentList.Count > 0) {
@@ -330,5 +337,6 @@ namespace TheCalculator.Models {
 		None,
 		MissingOpenBracket,
 		MissingCloseBracket,
+		UnknownOperator,
 	}
 }
