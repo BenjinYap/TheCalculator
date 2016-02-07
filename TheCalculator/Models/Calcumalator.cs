@@ -6,11 +6,11 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			//BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
-			//BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
-			//BadAssert ("1&1", CalcumalateError.UnknownOperator);
-			//BadAssert ("1_1", CalcumalateError.UnknownOperator);
-			//BadAssert ("1++1", CalcumalateError.SyntaxError);
+			BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
+			BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
+			BadAssert ("1&1", CalcumalateError.UnknownOperator);
+			BadAssert ("1_1", CalcumalateError.UnknownOperator);
+			BadAssert ("1++1", CalcumalateError.SyntaxError);
 
 			Assert ("sin(sin(0))", 0);
 			Assert ("(((sin((((0)))))))", 0);
@@ -111,8 +111,11 @@ namespace TheCalculator.Models {
 
 					continue;
 				} else if (token == ")") {
-
-					token = SolveList (lists).ToString ();
+					try {
+						token = SolveList (lists).Result.ToString ();
+					} catch (Exception) {
+						return new CalcumalateResult (CalcumalateError.SyntaxError);
+					}
 
 					if (lists.Count <= 0) {
 						lists.Add (new List <string> ());
@@ -128,7 +131,11 @@ namespace TheCalculator.Models {
 			double result = 0;
 			
 			while (lists.Count > 0) {
-				result = SolveList (lists);
+				try {
+					result = SolveList (lists).Result;
+				} catch (Exception) {
+					return new CalcumalateResult (CalcumalateError.SyntaxError);
+				}
 
 				if (lists.Count > 0) {
 					lists [lists.Count - 1].Add (result.ToString ());
@@ -151,7 +158,7 @@ namespace TheCalculator.Models {
 			return CalcumalateError.None;
 		}
 
-		private static double SolveList (List <List <string>> lists) {
+		private static CalcumalateResult SolveList (List <List <string>> lists) {
 			List <string> list = lists [lists.Count - 1];
 			
 			while (list.Count > 1) {
@@ -182,11 +189,7 @@ namespace TheCalculator.Models {
 						previousList.RemoveAt (previousList.Count - 1);
 
 						//second operand is after operator
-						//if (list.Count <= 1) {
-							
-						//} else {
-							n2 = double.Parse (list [1]);
-						//}
+						n2 = double.Parse (list [1]);
 					} else {
 						//unary operator
 						//operand is after operator
@@ -215,7 +218,7 @@ namespace TheCalculator.Models {
 				lists.RemoveAt (lists.Count - 1);
 			}
 
-			return result;
+			return new CalcumalateResult { Result = result };
 		}
 
 		private static bool OperatorIsHigher (string previousOp, string op) {
