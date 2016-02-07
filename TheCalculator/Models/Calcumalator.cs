@@ -6,41 +6,43 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			Assert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
-			Assert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
-			Assert ("1&1", CalcumalateError.UnknownOperator);
-			Assert ("1_1", CalcumalateError.UnknownOperator);
+			//BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
+			//BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
+			//BadAssert ("1&1", CalcumalateError.UnknownOperator);
+			//BadAssert ("1_1", CalcumalateError.UnknownOperator);
+			//BadAssert ("1++1", CalcumalateError.SyntaxError);
 
-			//Assert ("(((sin((((0)))))))", 0);
-			//Assert ("(-1)", -1);
-			//Assert ("-1", -1);
+			Assert ("sin(sin(0))", 0);
+			Assert ("(((sin((((0)))))))", 0);
+			Assert ("(-1)", -1);
+			Assert ("-1", -1);
 			
-			//Assert ("1", 1);
-			//Assert ("1*2+2", 4);
-			//Assert ("1+1*2-1*2", 1);
-			//Assert ("1*2^2^2", 16);
-			//Assert ("1*2+1+4/2", 5);
-			//Assert ("1", 1);
-			//Assert ("1+1-1", 1);
-			//Assert ("1-1+1", 1);
-			//Assert ("1+1*3", 4);
-			//Assert ("4/2", 2);
-			//Assert ("2^2", 4);
+			Assert ("1", 1);
+			Assert ("1*2+2", 4);
+			Assert ("1+1*2-1*2", 1);
+			Assert ("1*2^2^2", 16);
+			Assert ("1*2+1+4/2", 5);
+			Assert ("1", 1);
+			Assert ("1+1-1", 1);
+			Assert ("1-1+1", 1);
+			Assert ("1+1*3", 4);
+			Assert ("4/2", 2);
+			Assert ("2^2", 4);
 
-			//Assert ("(1+1)*2", 4);
+			Assert ("(1+1)*2", 4);
 			
+			
+
+			Assert ("-1+1", 0);
+			Assert ("1+-1", 0);
+			Assert ("1+-1+1", 1);
+
 			//Assert ("sin(0)", 0);
 			////Assert ("cos(1)", 0);
 			////Assert ("tan(45)", 1);
-
-			//Assert ("-1+1", 0);
-			//Assert ("1+-1", 0);
-			//Assert ("1+-1+1", 1);
-
-			
 		}
 
-		public static void Assert (string input, CalcumalateError output) {
+		public static void BadAssert (string input, CalcumalateError output) {
 			CalcumalateResult result = Calcumalate (input);
 
 			if (result.Error != output) {
@@ -59,8 +61,6 @@ namespace TheCalculator.Models {
 		}
 
 		public static CalcumalateResult Calcumalate (string input) {
-			CalcumalateResult finalResult = new CalcumalateResult ();
-
 			CalcumalateError bracketError = MissingBracket (input);
 
 			if (bracketError != CalcumalateError.None) {
@@ -135,10 +135,7 @@ namespace TheCalculator.Models {
 				}
 			}
 
-			finalResult.Error = CalcumalateError.None;
-			finalResult.Success = true;
-			finalResult.Result = result;
-			return finalResult;
+			return new CalcumalateResult { Result = result };
 		}
 
 		private static CalcumalateError MissingBracket (string input) {
@@ -156,7 +153,7 @@ namespace TheCalculator.Models {
 
 		private static double SolveList (List <List <string>> lists) {
 			List <string> list = lists [lists.Count - 1];
-
+			
 			while (list.Count > 1) {
 				double n1;
 				double n2 = 0;
@@ -185,7 +182,11 @@ namespace TheCalculator.Models {
 						previousList.RemoveAt (previousList.Count - 1);
 
 						//second operand is after operator
-						n2 = double.Parse (list [1]);
+						//if (list.Count <= 1) {
+							
+						//} else {
+							n2 = double.Parse (list [1]);
+						//}
 					} else {
 						//unary operator
 						//operand is after operator
@@ -318,11 +319,32 @@ namespace TheCalculator.Models {
 
 	public class CalcumalateResult {
 		public bool Success;
-		public double Result;
-		public CalcumalateError Error;
+
+		private double result;
+		public double Result {
+			get { return this.result; }
+			set {
+				this.result = value;
+				this.Success = true;
+				this.Error = CalcumalateError.None;
+			}
+		}
+
+		private CalcumalateError error;
+		public CalcumalateError Error {
+			get { return this.error; }
+			set {
+				this.error = value;
+
+				if (value != CalcumalateError.None) {
+					this.result = double.NaN;
+					this.Success = false;
+				}
+			}
+		}
 
 		public CalcumalateResult () {
-
+			
 		}
 
 		public CalcumalateResult (CalcumalateError error) {
@@ -338,5 +360,6 @@ namespace TheCalculator.Models {
 		MissingOpenBracket,
 		MissingCloseBracket,
 		UnknownOperator,
+		SyntaxError,
 	}
 }
