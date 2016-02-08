@@ -6,36 +6,36 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			//BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
-			//BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
-			//BadAssert ("1&1", CalcumalateError.UnknownOperator);
-			//BadAssert ("1_1", CalcumalateError.UnknownOperator);
-			//BadAssert ("1++1", CalcumalateError.SyntaxError);
+			BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
+			BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
+			BadAssert ("1&1", CalcumalateError.UnknownOperator);
+			BadAssert ("1_1", CalcumalateError.UnknownOperator);
+			BadAssert ("1++1", CalcumalateError.SyntaxError);
 
-			//Assert ("sin(sin(0))", 0);
-			//Assert ("(((sin((((0)))))))", 0);
-			//Assert ("(-1)", -1);
-			//Assert ("-1", -1);
+			Assert ("sin(sin(0))", 0);
+			Assert ("(((sin((((0)))))))", 0);
+			Assert ("(-1)", -1);
+			Assert ("-1", -1);
 			
-			//Assert ("1", 1);
-			//Assert ("1*2+2", 4);
-			//Assert ("1+1*2-1*2", 1);
-			//Assert ("1*2^2^2", 16);
-			//Assert ("1*2+1+4/2", 5);
-			//Assert ("1", 1);
-			//Assert ("1+1-1", 1);
-			//Assert ("1-1+1", 1);
-			//Assert ("1+1*3", 4);
-			//Assert ("4/2", 2);
-			//Assert ("2^2", 4);
+			Assert ("1", 1);
+			Assert ("1*2+2", 4);
+			Assert ("1+1*2-1*2", 1);
+			Assert ("1*2^2^2", 16);
+			Assert ("1*2+1+4/2", 5);
+			Assert ("1", 1);
+			Assert ("1+1-1", 1);
+			Assert ("1-1+1", 1);
+			Assert ("1+1*3", 4);
+			Assert ("4/2", 2);
+			Assert ("2^2", 4);
 
-			//Assert ("(1+1)*2", 4);
+			Assert ("(1+1)*2", 4);
 			
 			
 
-			//Assert ("-1+1", 0);
-			//Assert ("1+-1", 0);
-			//Assert ("1+-1+1", 1);
+			Assert ("-1+1", 0);
+			Assert ("1+-1", 0);
+			Assert ("1+-1+1", 1);
 
 			
 			Assert ("sin(0)", 0);
@@ -48,12 +48,16 @@ namespace TheCalculator.Models {
 			Assert ("asin(0)", 0);
 			Assert ("acos(1)", 0);
 			Assert ("atan(0)", 0);
+
+			Assert ("abs(-1)", 1);
+			Assert ("abs(1)", 1);
+			Assert ("abs(-1+abs(-1))", 0);
 		}
 
 		private static List <string> functions;
 
 		static Calcumalator () {
-			functions = new List <string> { "asin", "acos", "atan", "sinh", "cosh", "tanh", "sin", "cos", "tan" };
+			functions = new List <string> { "asin", "acos", "atan", "sinh", "cosh", "tanh", "sin", "cos", "tan", "abs" };
 		}
 
 		public static void BadAssert (string input, CalcumalateError output) {
@@ -287,6 +291,8 @@ namespace TheCalculator.Models {
 					return Math.Atan (n);
 				case "_":
 					return -n;
+				case "abs":
+					return Math.Abs (n);
 			}
 
 			return double.NaN;
