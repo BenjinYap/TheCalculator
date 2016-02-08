@@ -71,6 +71,12 @@ namespace TheCalculator.Views {
 
 		private void InputKeyUpped (object sender, KeyEventArgs e) {
 			if (e.Key == Key.Enter) {
+				//if input is empty, remove error and do nothing
+				if (string.IsNullOrWhiteSpace (this.TxtInput.Text)) {
+					this.Error = "";
+					return;
+				}
+
 				CalcumalateResult result = Calcumalator.Calcumalate (this.TxtInput.Text);
 
 				if (result.Error == CalcumalateError.None) {
