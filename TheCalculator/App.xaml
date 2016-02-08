@@ -4,6 +4,19 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-        
+        <sys:Double x:Key="FontSize">14</sys:Double>
+        <FontFamily x:Key="FontFamily">Consolas</FontFamily>
+        <sys:Double x:Key="ControlHeight">25</sys:Double>
+
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="{StaticResource FontFamily}"></Setter>
+            <Setter Property="FontSize" Value="{StaticResource FontSize}"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="FontFamily" Value="{StaticResource FontFamily}"></Setter>
+            <Setter Property="FontSize" Value="{StaticResource FontSize}"></Setter>
+            <Setter Property="Height" Value="{StaticResource ControlHeight}"></Setter>
+        </Style>
     </Application.Resources>
 </Application>
