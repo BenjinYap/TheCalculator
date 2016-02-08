@@ -47,17 +47,14 @@ namespace TheCalculator.Views {
 			}
 		}
 
-		private int historyIndex = -1;
-
-
+		public int HistoryIndex { get; set; }
 
 		public MainWindow () {
 			this.History = new History (); 
-			
+			this.HistoryIndex = -1;
+
 			InitializeComponent ();
 			
-			//this.Error = "awd";
-
 			this.History.Add (new HistoryItem ("awdggawd", 123));
 			this.History.Add (new HistoryItem ("awdagwd", 123));
 			this.History.Add (new HistoryItem ("aggjwdawd", 123));
@@ -77,11 +74,13 @@ namespace TheCalculator.Views {
 					return;
 				}
 
+				//calcumalate the result
 				CalcumalateResult result = Calcumalator.Calcumalate (this.TxtInput.Text);
 
+				//if no error
 				if (result.Error == CalcumalateError.None) {
 					//reset the history index
-					this.historyIndex = -1;
+					this.HistoryIndex = -1;
 					
 					//make the list visible for the first time
 					if (this.History.Count <= 0) {
@@ -96,7 +95,7 @@ namespace TheCalculator.Views {
 
 					//remove error
 					this.Error = "";
-				} else {
+				} else {  //if error
 					Dictionary <CalcumalateError, string> errors = new Dictionary <CalcumalateError, string> ();
 					errors [CalcumalateError.MissingOpenBracket] = Strings.MissingOpenBracket;
 					errors [CalcumalateError.MissingCloseBracket] = Strings.MissingCloseBracket;
@@ -106,38 +105,53 @@ namespace TheCalculator.Views {
 				}
 			} else if (e.Key == Key.Up) {
 				//if index has not moved
-				if (this.historyIndex <= -1) {
+				if (this.HistoryIndex <= -1) {
 					//set index to bottom
-					this.historyIndex = this.History.Count - 1;
-					this.SelectHistoryItem ();
-				} else if (this.historyIndex > 0) {  //if index has moved and isn't at the top
+					this.HistoryIndex = this.History.Count - 1;
+				} else if (this.HistoryIndex > 0) {  //if index has moved and isn't at the top
 					//move index up one
-					this.historyIndex--;
-					this.SelectHistoryItem ();
+					this.HistoryIndex--;
 				}
 			} else if (e.Key == Key.Down) {
 				//move index down only if the index has been moved and isn't at the bottom
-				if (this.historyIndex > -1 && this.historyIndex < this.History.Count) {
-					this.historyIndex++;
+				if (this.HistoryIndex > -1 && this.HistoryIndex < this.History.Count) {
+					this.HistoryIndex++;
 
 					//if index went off the end
-					if (this.historyIndex >= this.History.Count) {
+					if (this.HistoryIndex >= this.History.Count) {
 						//reset the index
-						this.historyIndex = -1;
-
-						//clear the input
-						this.TxtInput.Text = "";
-					} else {  //index is still within bounds
-						this.SelectHistoryItem ();
+						this.HistoryIndex = -1;
 					}
 				}
+			}
+
+			//update gui based on selected history item
+			if (e.Key == Key.Up || e.Key == Key.Down) {
+				this.SelectHistoryItem ();
 			}
 		}
 
 		private void SelectHistoryItem () {
-			//set the input to the history item input
-			this.TxtInput.Text = this.History [this.historyIndex].Input;
+			//if index isn't set, clear input
+			if (this.HistoryIndex <= -1) {
+				this.TxtInput.Text = "";
+			} else {  //if index is set
+				//set the input to the history item input
+				this.TxtInput.Text = this.History [this.HistoryIndex].Input;
+			}
+			
+			//force each item in the display list to update its background
+			for (int i = 0; i < this.HistoryListBox.Items.Count; i++) {
+				//get the item container
+				ContentPresenter cp = this.HistoryListBox.ItemContainerGenerator.ContainerFromIndex (i) as ContentPresenter;
 
+				//get the grid
+				Grid grid = VisualTreeHelper.GetChild (cp, 0) as Grid;
+
+				//make the grid's background binding refresh
+				BindingOperations.GetMultiBindingExpression (grid, Grid.BackgroundProperty).UpdateTarget ();
+			}
+			
 			//highlight all text
 			this.TxtInput.SelectAll ();
 		}

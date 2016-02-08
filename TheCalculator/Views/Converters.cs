@@ -8,16 +8,15 @@ using System.Windows.Data;
 using System.Windows.Media;
 namespace TheCalculator.Views {
 
-	//public class IndexToBackgroundConverter:IValueConverter {
-		
-	//	public object Convert (object value, Type targetType, object parameter, CultureInfo culture) {
-	//		return Brushes.Red;
-	//	}
+	public class IndexToBackgroundConverter:IMultiValueConverter {
+		public object Convert (object [] values, Type targetType, object parameter, CultureInfo culture) {
+			return values [0].Equals (values [1]) ? Brushes.Red : Brushes.Transparent;
+		}
 
-	//	public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) {
-	//		throw new NotImplementedException ();
-	//	}
-	//}
+		public object [] ConvertBack (object value, Type [] targetTypes, object parameter, CultureInfo culture) {
+			throw new NotImplementedException ();
+		}
+	}
 
 	public class LengthToVisibilityConverter:IValueConverter {
 		public object Convert (object value, Type targetType, object parameter, CultureInfo culture) {
