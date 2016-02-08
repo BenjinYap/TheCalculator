@@ -65,16 +65,37 @@ namespace TheCalculator.Views {
 				if (this.historyIndex <= -1) {
 					//set index to bottom
 					this.historyIndex = this.History.Count - 1;
+					this.SelectHistoryItem ();
 				} else if (this.historyIndex > 0) {  //if index has moved and isn't at the top
 					//move index up one
 					this.historyIndex--;
+					this.SelectHistoryItem ();
 				}
 			} else if (e.Key == Key.Down) {
 				//move index down only if the index has been moved and isn't at the bottom
-				if (this.historyIndex > -1 && this.historyIndex < this.History.Count - 1) {
+				if (this.historyIndex > -1 && this.historyIndex < this.History.Count) {
 					this.historyIndex++;
+
+					//if index went off the end
+					if (this.historyIndex >= this.History.Count) {
+						//reset the index
+						this.historyIndex = -1;
+
+						//clear the input
+						this.TxtInput.Text = "";
+					} else {  //index is still within bounds
+						this.SelectHistoryItem ();
+					}
 				}
 			}
+		}
+
+		private void SelectHistoryItem () {
+			//set the input to the history item input
+			this.TxtInput.Text = this.History [this.historyIndex].Input;
+
+			//highlight all text
+			this.TxtInput.SelectAll ();
 		}
 	}
 }
