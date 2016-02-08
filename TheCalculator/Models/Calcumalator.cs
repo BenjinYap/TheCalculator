@@ -37,9 +37,16 @@ namespace TheCalculator.Models {
 			Assert ("1+-1", 0);
 			Assert ("1+-1+1", 1);
 
-			//Assert ("sin(0)", 0);
-			////Assert ("cos(1)", 0);
-			////Assert ("tan(45)", 1);
+			Assert ("sin(0)", 0);
+			Assert ("tan(0)", 0);
+			Assert ("cos(0)", 1);
+			Assert ("tan(45)", 1);
+		}
+
+		private static List <string> functions;
+
+		static Calcumalator () {
+			functions = new List <string> { "sin", "cos", "tan" };
 		}
 
 		public static void BadAssert (string input, CalcumalateError output) {
@@ -232,7 +239,7 @@ namespace TheCalculator.Models {
 				return true;
 			}
 
-			if ("sincostan^_".Contains (op)) {
+			if ("^_".Contains (op) || functions.Contains (op)) {
 				return true;
 			}
 
@@ -244,7 +251,7 @@ namespace TheCalculator.Models {
 		}
 
 		private static bool IsOperator (string token) {
-			return "+-*/^sincostan_".Contains (token);
+			return "+-*/^_".Contains (token) || functions.Contains (token);
 		}
 
 		private static bool IsBinaryOperator (string op) {
@@ -292,7 +299,7 @@ namespace TheCalculator.Models {
 			string [] patterns = {
 									 @"^\d+",
 									 @"^[+\-*/()^]",
-									 @"^sin|cos|tan",
+									 @"^" + string.Join ("|", functions),
 								 };
 			
 			//check input against each pattern
