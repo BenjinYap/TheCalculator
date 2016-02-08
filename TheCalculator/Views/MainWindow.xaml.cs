@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TheCalculator.Localization;
 using TheCalculator.Models;
 using TheCalculator.ViewModels;
 
@@ -20,15 +23,40 @@ namespace TheCalculator.Views {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow:Window {
+	public partial class MainWindow:Window, INotifyPropertyChanged {
+		#region INotifyPropertyChanged
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged ([CallerMemberName] string propertyName = null) {
+			PropertyChangedEventHandler handler = this.PropertyChanged;
+
+			if (handler != null) {
+				handler (this, new PropertyChangedEventArgs (propertyName));
+			}
+		}
+		#endregion
+
 		public History History { get; set; }
+
+		private string error;
+		public string Error {
+			get { return this.error; }
+			set {
+				this.error = value;
+				this.OnPropertyChanged ();
+			}
+		}
 
 		private int historyIndex = -1;
 
+
+
 		public MainWindow () {
 			this.History = new History (); 
-
+			
 			InitializeComponent ();
+			
+			//this.Error = "awd";
 
 			this.History.Add (new HistoryItem ("awdggawd", 123));
 			this.History.Add (new HistoryItem ("awdagwd", 123));
@@ -48,7 +76,7 @@ namespace TheCalculator.Views {
 				if (result.Error == CalcumalateError.None) {
 					//reset the history index
 					this.historyIndex = -1;
-
+					
 					//make the list visible for the first time
 					if (this.History.Count <= 0) {
 						this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
@@ -59,8 +87,16 @@ namespace TheCalculator.Views {
 
 					//reset the textbox
 					this.TxtInput.Text = "";
-				} else {
 
+					//remove error
+					this.Error = "";
+				} else {
+					Dictionary <CalcumalateError, string> errors = new Dictionary <CalcumalateError, string> ();
+					errors [CalcumalateError.MissingOpenBracket] = Strings.MissingOpenBracket;
+					errors [CalcumalateError.MissingCloseBracket] = Strings.MissingCloseBracket;
+					errors [CalcumalateError.UnknownOperator] = Strings.UnknownOperator;
+					errors [CalcumalateError.SyntaxError] = Strings.SyntaxError;
+					this.Error = errors [result.Error];
 				}
 			} else if (e.Key == Key.Up) {
 				//if index has not moved

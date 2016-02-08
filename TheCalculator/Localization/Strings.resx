@@ -120,7 +120,19 @@
   <data name="Equation" xml:space="preserve">
     <value>Equation</value>
   </data>
+  <data name="MissingCloseBracket" xml:space="preserve">
+    <value>Missing )</value>
+  </data>
+  <data name="MissingOpenBracket" xml:space="preserve">
+    <value>Missing (</value>
+  </data>
+  <data name="SyntaxError" xml:space="preserve">
+    <value>Syntax error</value>
+  </data>
   <data name="TheCalculator" xml:space="preserve">
     <value>The Calculator</value>
+  </data>
+  <data name="UnknownOperator" xml:space="preserve">
+    <value>Unknown operator</value>
   </data>
 </root>

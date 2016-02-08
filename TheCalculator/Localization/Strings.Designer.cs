@@ -70,11 +70,47 @@ namespace TheCalculator.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing ).
+        /// </summary>
+        public static string MissingCloseBracket {
+            get {
+                return ResourceManager.GetString("MissingCloseBracket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing (.
+        /// </summary>
+        public static string MissingOpenBracket {
+            get {
+                return ResourceManager.GetString("MissingOpenBracket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax error.
+        /// </summary>
+        public static string SyntaxError {
+            get {
+                return ResourceManager.GetString("SyntaxError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Calculator.
         /// </summary>
         public static string TheCalculator {
             get {
                 return ResourceManager.GetString("TheCalculator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown operator.
+        /// </summary>
+        public static string UnknownOperator {
+            get {
+                return ResourceManager.GetString("UnknownOperator", resourceCulture);
             }
         }
     }
