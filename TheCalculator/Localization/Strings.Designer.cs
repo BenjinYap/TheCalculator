@@ -61,11 +61,11 @@ namespace TheCalculator.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to there.
+        ///   Looks up a localized string similar to Equation.
         /// </summary>
-        public static string hello {
+        public static string Equation {
             get {
-                return ResourceManager.GetString("hello", resourceCulture);
+                return ResourceManager.GetString("Equation", resourceCulture);
             }
         }
         

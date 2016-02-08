@@ -30,9 +30,9 @@ namespace TheCalculator.Views {
 
 			InitializeComponent ();
 
-			this.History.Add (new HistoryItem ("awdawd", 123));
-			this.History.Add (new HistoryItem ("awdawd", 123));
-			this.History.Add (new HistoryItem ("awdawd", 123));
+			this.History.Add (new HistoryItem ("awdggawd", 123));
+			this.History.Add (new HistoryItem ("awdagwd", 123));
+			this.History.Add (new HistoryItem ("aggjwdawd", 123));
 			this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 
