@@ -10,7 +10,7 @@ namespace TheCalculator.Views {
 
 	public class IndexToBackgroundConverter:IMultiValueConverter {
 		public object Convert (object [] values, Type targetType, object parameter, CultureInfo culture) {
-			return values [0].Equals (values [1]) ? Brushes.Red : Brushes.Transparent;
+			return values [0].Equals (values [1]) ? Brushes.LightBlue : Brushes.Transparent;
 		}
 
 		public object [] ConvertBack (object value, Type [] targetTypes, object parameter, CultureInfo culture) {
