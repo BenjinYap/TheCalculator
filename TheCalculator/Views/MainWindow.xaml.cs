@@ -155,6 +155,7 @@ namespace TheCalculator.Views {
 				//get the item container
 				ContentPresenter cp = this.HistoryListBox.ItemContainerGenerator.ContainerFromIndex (i) as ContentPresenter;
 
+				//make sure container exists and has children
 				if (cp != null && VisualTreeHelper.GetChildrenCount (cp) > 0) {
 					//get the grid
 					Grid grid = VisualTreeHelper.GetChild (cp, 0) as Grid;
