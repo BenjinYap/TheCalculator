@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,8 @@ namespace TheCalculator.Views {
 	public partial class MainWindow:Window {
 		public History History { get; set; }
 
+		private int historyIndex = -1;
+
 		public MainWindow () {
 			this.History = new History (); 
 
@@ -41,14 +44,35 @@ namespace TheCalculator.Views {
 				CalcumalateResult result = Calcumalator.Calcumalate (this.TxtInput.Text);
 
 				if (result.Error == CalcumalateError.None) {
+					//reset the history index
+					this.historyIndex = -1;
+
+					//make the list visible for the first time
 					if (this.History.Count <= 0) {
 						this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 					}
 
+					//add to the history
 					this.History.Add (new HistoryItem (this.TxtInput.Text, result.Result));
+
+					//reset the textbox
 					this.TxtInput.Text = "";
 				} else {
 
+				}
+			} else if (e.Key == Key.Up) {
+				//if index has not moved
+				if (this.historyIndex <= -1) {
+					//set index to bottom
+					this.historyIndex = this.History.Count - 1;
+				} else if (this.historyIndex > 0) {  //if index has moved and isn't at the top
+					//move index up one
+					this.historyIndex--;
+				}
+			} else if (e.Key == Key.Down) {
+				//move index down only if the index has been moved and isn't at the bottom
+				if (this.historyIndex > -1 && this.historyIndex < this.History.Count - 1) {
+					this.historyIndex++;
 				}
 			}
 		}
