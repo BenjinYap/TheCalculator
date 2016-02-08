@@ -79,9 +79,6 @@ namespace TheCalculator.Views {
 
 				//if no error
 				if (result.Error == CalcumalateError.None) {
-					//reset the history index
-					this.HistoryIndex = -1;
-					
 					//make the list visible for the first time
 					if (this.History.Count <= 0) {
 						this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
@@ -89,9 +86,6 @@ namespace TheCalculator.Views {
 
 					//add to the history
 					this.History.Add (new HistoryItem (this.TxtInput.Text, result.Result));
-
-					//reset the textbox
-					this.TxtInput.Text = "";
 
 					//remove error
 					this.Error = "";
@@ -102,6 +96,22 @@ namespace TheCalculator.Views {
 					errors [CalcumalateError.UnknownOperator] = Strings.UnknownOperator;
 					errors [CalcumalateError.SyntaxError] = Strings.SyntaxError;
 					this.Error = errors [result.Error];
+				}
+
+				//get the input incase of error
+				string input = this.TxtInput.Text;
+
+				//reset the history index
+				this.HistoryIndex = -1;
+
+				//reset the gui highlight
+				this.SelectHistoryItem ();
+
+				//if there was error
+				if (result.Error != CalcumalateError.None) {
+					//set the textbox to be the original input and highlight it
+					this.TxtInput.Text = input;
+					this.TxtInput.SelectAll ();
 				}
 			} else if (e.Key == Key.Up) {
 				//if index has not moved
@@ -145,11 +155,13 @@ namespace TheCalculator.Views {
 				//get the item container
 				ContentPresenter cp = this.HistoryListBox.ItemContainerGenerator.ContainerFromIndex (i) as ContentPresenter;
 
-				//get the grid
-				Grid grid = VisualTreeHelper.GetChild (cp, 0) as Grid;
+				if (VisualTreeHelper.GetChildrenCount (cp) > 0) {
+					//get the grid
+					Grid grid = VisualTreeHelper.GetChild (cp, 0) as Grid;
 
-				//make the grid's background binding refresh
-				BindingOperations.GetMultiBindingExpression (grid, Grid.BackgroundProperty).UpdateTarget ();
+					//make the grid's background binding refresh
+					BindingOperations.GetMultiBindingExpression (grid, Grid.BackgroundProperty).UpdateTarget ();
+				}
 			}
 			
 			//highlight all text
