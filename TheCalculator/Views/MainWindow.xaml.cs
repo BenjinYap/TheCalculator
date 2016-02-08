@@ -55,10 +55,10 @@ namespace TheCalculator.Views {
 
 			InitializeComponent ();
 			
-			this.History.Add (new HistoryItem ("awdggawd", 123));
-			this.History.Add (new HistoryItem ("awdagwd", 123));
-			this.History.Add (new HistoryItem ("aggjwdawd", 123));
-			this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
+			//this.History.Add (new HistoryItem ("awdggawd", 123));
+			//this.History.Add (new HistoryItem ("awdagwd", 123));
+			//this.History.Add (new HistoryItem ("aggjwdawd", 123));
+			//this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		private void InputTextChanged (object sender, RoutedEventArgs e) {
@@ -155,7 +155,7 @@ namespace TheCalculator.Views {
 				//get the item container
 				ContentPresenter cp = this.HistoryListBox.ItemContainerGenerator.ContainerFromIndex (i) as ContentPresenter;
 
-				if (VisualTreeHelper.GetChildrenCount (cp) > 0) {
+				if (cp != null && VisualTreeHelper.GetChildrenCount (cp) > 0) {
 					//get the grid
 					Grid grid = VisualTreeHelper.GetChild (cp, 0) as Grid;
 
