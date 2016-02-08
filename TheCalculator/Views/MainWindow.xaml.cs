@@ -133,6 +133,9 @@ namespace TheCalculator.Views {
 						this.HistoryIndex = -1;
 					}
 				}
+			} else if (e.Key == Key.Q) {
+				//quit on Q
+				Application.Current.Shutdown ();
 			}
 
 			//update gui based on selected history item
