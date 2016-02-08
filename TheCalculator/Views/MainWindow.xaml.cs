@@ -30,13 +30,15 @@ namespace TheCalculator.Views {
 
 			InitializeComponent ();
 
-			//this.History.Add (new HistoryItem ("awdawd", 123));
-			//this.History.Add (new HistoryItem ("awdawd", 123));
-			//this.History.Add (new HistoryItem ("awdawd", 123));
+			this.History.Add (new HistoryItem ("awdawd", 123));
+			this.History.Add (new HistoryItem ("awdawd", 123));
+			this.History.Add (new HistoryItem ("awdawd", 123));
+			this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		private void InputTextChanged (object sender, RoutedEventArgs e) {
-			
+			this.TxtPlaceholder.Visibility = this.TxtInput.Text.Length <= 0 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+			this.TxtInput.Opacity = this.TxtInput.Text.Length <= 0 ? 0.5 : 1;
 		}
 
 		private void InputKeyUpped (object sender, KeyEventArgs e) {

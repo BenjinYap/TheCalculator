@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
         
         <ScrollViewer x:Name="ScrollViewer" Grid.RowSpan="1" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
-            <ItemsControl Padding="5 5 5 0" ItemsSource="{Binding History}" Grid.IsSharedSizeScope="True">
+            <ItemsControl IsTabStop="False" Padding="5 5 5 0" ItemsSource="{Binding History}" Grid.IsSharedSizeScope="True">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid HorizontalAlignment="Right" Margin="0 0 0 5">
@@ -52,6 +52,18 @@
             </ItemsControl>
         </ScrollViewer>
 
+        <TextBox x:Name="TxtPlaceholder"
+                 IsReadOnly="True"
+                 HorizontalContentAlignment="Right"
+                 VerticalContentAlignment="Center"
+                 Padding="5 0 5 0"
+                 Grid.RowSpan="1"
+                 Grid.Row="1"
+                 Text="Equation..."
+                 IsTabStop="False"
+                 >
+        </TextBox>
+        
         <TextBox x:Name="TxtInput"
                  TextChanged="InputTextChanged"
                  KeyUp="InputKeyUpped"
@@ -60,7 +72,7 @@
                  Padding="5 0 5 0"
                  Grid.RowSpan="1"
                  Grid.Row="1"
-                 Text="1+1+1"
+                 Opacity="0.5"
                  >
         </TextBox>
     </Grid>
