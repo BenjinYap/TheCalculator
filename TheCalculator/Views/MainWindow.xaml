@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:str="clr-namespace:TheCalculator.Localization"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:views="clr-namespace:TheCalculator.Views"
         ResizeMode="NoResize"
+        x:Name="Window"
         Title="{x:Static str:Strings.TheCalculator}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         SizeToContent="Height"
@@ -12,7 +14,7 @@
         >
     
     <Window.Resources>
-        
+        <views:LengthToVisibilityConverter x:Key="LengthToVisibility"></views:LengthToVisibilityConverter>
     </Window.Resources>
     
     <Grid FocusManager.FocusedElement="{Binding ElementName=TxtInput}">
@@ -83,6 +85,7 @@
                    Grid.Row="2"
                    Foreground="Red"
                    Margin="5"
+                   Visibility="{Binding ElementName=Window, Path=Error, Converter={StaticResource LengthToVisibility}}"
                    >
         </TextBlock>
     </Grid>

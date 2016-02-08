@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\HistoryItem.cs" />
+    <Compile Include="Views\Converters.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
