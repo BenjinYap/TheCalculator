@@ -64,6 +64,8 @@ namespace TheCalculator.Models {
 					}
 
 					previousOperator = token;
+				} else if (IsConstant (token)) {
+					token = Solve (token).ToString ();
 				} else if (token == "(") {
 					if (currentList.Count > 0) {
 						lists.Add (new List <string> ());

@@ -62,6 +62,8 @@ namespace TheCalculator {
 			Assert ("abs(-1+abs(-1))", 0);
 			
 			Assert ("pi", Math.PI);
+			Assert ("π", Math.PI);
+			Assert ("π+pi", Math.PI * 2);
 		}
 
 		public static void BadAssert (string input, CalcumalateError output) {
