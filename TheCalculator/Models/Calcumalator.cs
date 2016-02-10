@@ -20,6 +20,10 @@ namespace TheCalculator.Models {
 			string rawInput = input;
 			input = input.Replace (" ", "").ToLower ();
 
+			if (input [0] == '+') {
+				input = input.Substring (1);
+			}
+
 			CalcumalateError precheckError = PrecheckErrors (input);
 
 			if (precheckError != CalcumalateError.None) {
@@ -35,7 +39,7 @@ namespace TheCalculator.Models {
 
 			while (input.Length > 0) {
 				string token = GetNextToken (input);
-			
+				
 				input = ReplaceFirst (input, token, "");
 
 				if (token == "") {
@@ -128,6 +132,12 @@ namespace TheCalculator.Models {
 				}
 			}
 
+			if (matches.Count > 0) {
+				if (matches [matches.Count - 1].Index == input.Length - 1) {
+					return CalcumalateError.SyntaxError;
+				}
+			}
+
 			return CalcumalateError.None;
 		}
 
@@ -156,23 +166,13 @@ namespace TheCalculator.Models {
 					list.RemoveAt (0);
 					list.Insert (0, Solve (token).ToString ());
 				} else if (IsBinaryOperator (token)) {  //if token is binary operator at beginning of list
-					//if there isn't a previous list, something is wrong
-					if (lists.Count < 2) {
-						return new CalcumalateResult (CalcumalateError.SyntaxError);
-					}
-					
 					List <string> previousList = lists [lists.Count - 2];
 
 					//get the first operand from the previous list
 					double n1 = double.Parse (previousList [previousList.Count - 1]);
 					string op = token;  //current token is the binary operator
-					double n2;  //second operand is after the operator
-
-					//if the second operand isn't there, something is wrong
-					if (double.TryParse (list [1], out n2) == false) {
-						return new CalcumalateResult (CalcumalateError.SyntaxError);
-					}
-
+					double n2 = double.Parse (list [1]);  //second operand is after the operator
+ 
 					//remove the tokens from both lists
 					previousList.RemoveAt (previousList.Count - 1);
 					list.RemoveRange (0, 2);
@@ -181,12 +181,7 @@ namespace TheCalculator.Models {
 					list.Insert (0, Solve (op, n1, n2).ToString ());
 				} else if (IsFunction (token)) {  //token is a function
 					string op = list [0];
-					double n;  //operand is after the operator
-
-					//if operand isn't there, something is wrong
-					if (list.Count < 2 || double.TryParse (list [1], out n) == false) {
-						return new CalcumalateResult (CalcumalateError.SyntaxError);
-					}
+					double n = double.Parse (list [1]);  //operand is after the operator
 
 					list.RemoveRange (0, 2);  //remove tokens from list
 					list.Insert (0, Solve (op, n).ToString ());  //solve and insert to front of list
@@ -194,12 +189,7 @@ namespace TheCalculator.Models {
 					//treat this as a binary operation
 					double n1 = double.Parse (list [0]);  //first operand is current token
 					string op = list [1];  //operator is after first operand
-					double n2;  //second operand is after operator
-
-					//if the second operand isn't there, something is wrong
-					if (double.TryParse (list [2], out n2) == false) {
-						return new CalcumalateResult (CalcumalateError.SyntaxError);
-					}
+					double n2 = double.Parse (list [2]);  //second operand is after operator
 
 					list.RemoveRange (0, 3);  //remove tokens from list
 					list.Insert (0, Solve (op, n1, n2).ToString ());  //solve and insert result to front of list
@@ -211,14 +201,13 @@ namespace TheCalculator.Models {
 				}
 			}
 
-			
-			double result = double.NaN;  //the remaining token is a number
-
-			//if number isn't there, something is wrong
-			if (list.Count < 1 || double.TryParse (list [0], out result) == false) {
+			//something is wrong if the list is empty
+			if (list.Count <= 0) {
 				return new CalcumalateResult (CalcumalateError.SyntaxError);
 			}
-
+			
+			double result = double.Parse (list [0]);  //the remaining token is a number
+			
 			//remove the now empty list from the list of lists
 			lists.RemoveAt (lists.Count - 1);
 			

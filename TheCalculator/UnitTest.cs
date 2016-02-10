@@ -14,19 +14,16 @@ namespace TheCalculator {
 			BadAssert ("*/1--1", CalcumalateError.SyntaxError);
 			BadAssert ("_!41--1", CalcumalateError.UnknownOperator);
 			BadAssert ("++++++++", CalcumalateError.SyntaxError);
-			BadAssert ("----", CalcumalateError.SyntaxError);
 			BadAssert (")))(((", CalcumalateError.SyntaxError);
-			//BadAssert ("8-^738^2^^", CalcumalateError.SyntaxError);
-			//BadAssert ("9^4/*035*1", CalcumalateError.SyntaxError);
-			//BadAssert ("3^5462/07+", CalcumalateError.SyntaxError);
-			//BadAssert ("+636/9927-", CalcumalateError.SyntaxError);
-			//BadAssert ("-16/5-4757", CalcumalateError.SyntaxError);
-			//BadAssert ("4148+4-9-6", CalcumalateError.SyntaxError);
-			//BadAssert ("+5+0620-00", CalcumalateError.SyntaxError);
-			//BadAssert ("2/3912-15*", CalcumalateError.SyntaxError);
-			//BadAssert ("0367315^5/", CalcumalateError.SyntaxError);
-			//BadAssert ("1847/1-24+", CalcumalateError.SyntaxError);
+			BadAssert ("8-^738^2^^", CalcumalateError.SyntaxError);
+			BadAssert ("9^4/*035*1", CalcumalateError.SyntaxError);
+			BadAssert ("3^2/07+", CalcumalateError.SyntaxError);
+			BadAssert ("+636/9927-", CalcumalateError.SyntaxError);
+			BadAssert ("2/3912-15*", CalcumalateError.SyntaxError);
+			BadAssert ("0367315^5/", CalcumalateError.SyntaxError);
+			BadAssert ("1847/1-24+", CalcumalateError.SyntaxError);
 
+			Assert ("-cos(0)", -1);
 			Assert ("-1+1", 0);
 			Assert ("1--1", 2);
 			Assert ("sin(sin(0))", 0);
