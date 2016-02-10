@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>TheCalculator.Models.Calcumalator</StartupObject>
+    <StartupObject>TheCalculator.UnitTest</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -69,6 +69,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="UnitTest.cs" />
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\HistoryItem.cs" />
     <Compile Include="Views\Converters.cs" />
