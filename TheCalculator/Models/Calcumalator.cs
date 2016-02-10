@@ -6,15 +6,29 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			//BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
-			//BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
-			//BadAssert ("1&1", CalcumalateError.UnknownOperator);
-			//BadAssert ("1_1", CalcumalateError.UnknownOperator);
-			//BadAssert ("1++1", CalcumalateError.SyntaxError);
-			//BadAssert ("1**1", CalcumalateError.SyntaxError);
-			//BadAssert ("*/1--1", CalcumalateError.SyntaxError);
+			BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
+			BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
+			BadAssert ("1&1", CalcumalateError.UnknownOperator);
+			BadAssert ("1_1", CalcumalateError.UnknownOperator);
+			BadAssert ("1++1", CalcumalateError.SyntaxError);
+			BadAssert ("1**1", CalcumalateError.SyntaxError);
+			BadAssert ("*/1--1", CalcumalateError.SyntaxError);
 			BadAssert ("_!41--1", CalcumalateError.UnknownOperator);
+			BadAssert ("++++++++", CalcumalateError.SyntaxError);
+			BadAssert ("----", CalcumalateError.SyntaxError);
+			BadAssert (")))(((", CalcumalateError.SyntaxError);
+			//BadAssert ("8-^738^2^^", CalcumalateError.SyntaxError);
+			//BadAssert ("9^4/*035*1", CalcumalateError.SyntaxError);
+			//BadAssert ("3^5462/07+", CalcumalateError.SyntaxError);
+			//BadAssert ("+636/9927-", CalcumalateError.SyntaxError);
+			//BadAssert ("-16/5-4757", CalcumalateError.SyntaxError);
+			//BadAssert ("4148+4-9-6", CalcumalateError.SyntaxError);
+			//BadAssert ("+5+0620-00", CalcumalateError.SyntaxError);
+			//BadAssert ("2/3912-15*", CalcumalateError.SyntaxError);
+			//BadAssert ("0367315^5/", CalcumalateError.SyntaxError);
+			//BadAssert ("1847/1-24+", CalcumalateError.SyntaxError);
 
+			Assert ("-1+1", 0);
 			Assert ("1--1", 2);
 			Assert ("sin(sin(0))", 0);
 			Assert ("(((sin((((0)))))))", 0);
@@ -32,7 +46,7 @@ namespace TheCalculator.Models {
 			Assert ("4/2", 2);
 			Assert ("2^2", 4);
 			Assert ("(1+1)*2", 4);
-			Assert ("-1+1", 0);
+			
 			Assert ("1+-1", 0);
 			Assert ("1+-1+1", 1);
 
@@ -53,11 +67,13 @@ namespace TheCalculator.Models {
 			//Assert ("pi", Math.PI);
 		}
 
+		private static List <string> operators;
 		private static List <string> functions;
 		private static List <string> constants;
 
 		static Calcumalator () {
-			functions = new List <string> { "asin", "acos", "atan", "sinh", "cosh", "tanh", "sin", "cos", "tan", "abs" };
+			operators = new List <string> { "+", "-", "*", "/", "^" };
+			functions = new List <string> { "asin", "acos", "atan", "sinh", "cosh", "tanh", "sin", "cos", "tan", "abs", "neg" };
 			constants = new List <string> { "π", "pi" };
 		}
 
@@ -81,15 +97,14 @@ namespace TheCalculator.Models {
 
 		public static CalcumalateResult Calcumalate (string input) {
 			string rawInput = input;
+			input = input.Replace (" ", "").ToLower ();
 
-			CalcumalateError bracketError = MissingBracket (input);
+			CalcumalateError precheckError = PrecheckErrors (input);
 
-			if (bracketError != CalcumalateError.None) {
-				return new CalcumalateResult (bracketError);
+			if (precheckError != CalcumalateError.None) {
+				return new CalcumalateResult (precheckError);
 			}
 
-			input = input.Replace (" ", "").ToLower ();
-			
 			List <List <string>> lists = new List <List <string>> ();
 			lists.Add (new List <string> ());
 			List <string> currentList = lists [0];
@@ -114,7 +129,7 @@ namespace TheCalculator.Models {
 
 					if (token == "-") {
 						if (previousToken == null || IsOperator (previousToken)) {
-							token = "_";
+							token = "neg";
 
 							if (currentList.Count > 0) {
 								lists.Add (new List <string> ());
@@ -170,6 +185,31 @@ namespace TheCalculator.Models {
 			return new CalcumalateResult { Result = result };
 		}
 
+		private static CalcumalateError PrecheckErrors (string input) {
+			CalcumalateError bracketError = MissingBracket (input);
+
+			if (bracketError != CalcumalateError.None) {
+				return bracketError;
+			}
+			
+			MatchCollection matches = Regex.Matches (input, @"[+\-*/^]");
+			
+			if (matches.Count > 1) {
+				for (int i = 0; i < matches.Count - 1; i++) {
+					Match m1 = matches [i];
+					Match m2 = matches [i + 1];
+					
+					if (m2.Index - m1.Index <= 1) {
+						if (m2.Value != "-") {
+							return CalcumalateError.SyntaxError;
+						}
+					}
+				}
+			}
+
+			return CalcumalateError.None;
+		}
+
 		private static CalcumalateError MissingBracket (string input) {
 			MatchCollection open = Regex.Matches (input, @"\(");
 			MatchCollection close = Regex.Matches (input, @"\)");
@@ -199,7 +239,7 @@ namespace TheCalculator.Models {
 					if (lists.Count < 2) {
 						return new CalcumalateResult (CalcumalateError.SyntaxError);
 					}
-
+					
 					List <string> previousList = lists [lists.Count - 2];
 
 					//get the first operand from the previous list
@@ -218,9 +258,15 @@ namespace TheCalculator.Models {
 
 					//solve and insert result to front of current list
 					list.Insert (0, Solve (op, n1, n2).ToString ());
-				} else if (IsFunction (token) || token == "_") {  //token is a function or negative operator
+				} else if (IsFunction (token)) {  //token is a function
 					string op = list [0];
-					double n = double.Parse (list [1]);  //operand is after the operator
+					double n;  //operand is after the operator
+
+					//if operand isn't there, something is wrong
+					if (list.Count < 2 || double.TryParse (list [1], out n) == false) {
+						return new CalcumalateResult (CalcumalateError.SyntaxError);
+					}
+
 					list.RemoveRange (0, 2);  //remove tokens from list
 					list.Insert (0, Solve (op, n).ToString ());  //solve and insert to front of list
 				} else if (list.Count >= 3) {  //token is a number and there are at least 3 tokens
@@ -244,8 +290,13 @@ namespace TheCalculator.Models {
 				}
 			}
 
-			//the remaining token is a number
-			double result = double.Parse (list [0]);
+			
+			double result = double.NaN;  //the remaining token is a number
+
+			//if number isn't there, something is wrong
+			if (list.Count < 1 || double.TryParse (list [0], out result) == false) {
+				return new CalcumalateResult (CalcumalateError.SyntaxError);
+			}
 
 			//remove the now empty list from the list of lists
 			lists.RemoveAt (lists.Count - 1);
@@ -254,17 +305,17 @@ namespace TheCalculator.Models {
 		}
 
 		private static bool OperatorIsHigher (string previousOp, string op) {
-			List <string> prescedences = new List <string> { "+-", "*/", "^", "_" };
+			List <string> prescedences = new List <string> { "+-", "*/", "^" };
 
 			//get precedence of operators if they are the basic operators
 			int p = prescedences.FindIndex (a => a.Contains (op));
 			int pp = previousOp == null ? -1 : prescedences.FindIndex (a => a.Contains (previousOp));
 
-			if (p > pp) {
+			if (p > -1 && pp > -1 && p > pp) {
 				return true;
 			}
 
-			if ("^_".Contains (op) || functions.Contains (op)) {
+			if (op == "^" || functions.Contains (op)) {
 				return true;
 			}
 
@@ -321,7 +372,7 @@ namespace TheCalculator.Models {
 					return Math.Acos (n);
 				case "atan":
 					return Math.Atan (n);
-				case "_":
+				case "neg":
 					return -n;
 				case "abs":
 					return Math.Abs (n);
