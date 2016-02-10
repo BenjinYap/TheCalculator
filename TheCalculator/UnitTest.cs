@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Diagnostics;
 using TheCalculator.Models;
 namespace TheCalculator {
@@ -59,8 +60,8 @@ namespace TheCalculator {
 			Assert ("abs(-1)", 1);
 			Assert ("abs(1)", 1);
 			Assert ("abs(-1+abs(-1))", 0);
-
-			//Assert ("pi", Math.PI);
+			
+			Assert ("pi", Math.PI);
 		}
 
 		public static void BadAssert (string input, CalcumalateError output) {
@@ -74,7 +75,7 @@ namespace TheCalculator {
 		public static void Assert (string input, double output) {
 			CalcumalateResult result = Calcumalator.Calcumalate (input);
 
-			if (result.Result == output) {
+			if (Math.Abs (result.Result - output) <= Math.Abs (result.Result * 0.00001)) {
 				
 			} else {
 				Debug.WriteLine (input + " = " + output + ", GOT " + result.Result);
