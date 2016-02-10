@@ -6,11 +6,11 @@ using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
 	public static class Calcumalator {
 		public static void Main (string [] args) {
-			BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
-			BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
-			BadAssert ("1&1", CalcumalateError.UnknownOperator);
-			BadAssert ("1_1", CalcumalateError.UnknownOperator);
-			BadAssert ("1++1", CalcumalateError.SyntaxError);
+			//BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);
+			//BadAssert ("1+1*1/(1+1^(sin(0))))", CalcumalateError.MissingOpenBracket);
+			//BadAssert ("1&1", CalcumalateError.UnknownOperator);
+			//BadAssert ("1_1", CalcumalateError.UnknownOperator);
+			//BadAssert ("1++1", CalcumalateError.SyntaxError);
 
 			Assert ("sin(sin(0))", 0);
 			Assert ("(((sin((((0)))))))", 0);
@@ -52,12 +52,16 @@ namespace TheCalculator.Models {
 			Assert ("abs(-1)", 1);
 			Assert ("abs(1)", 1);
 			Assert ("abs(-1+abs(-1))", 0);
+
+			//Assert ("pi", Math.PI);
 		}
 
 		private static List <string> functions;
+		private static List <string> constants;
 
 		static Calcumalator () {
 			functions = new List <string> { "asin", "acos", "atan", "sinh", "cosh", "tanh", "sin", "cos", "tan", "abs" };
+			constants = new List <string> { "π", "pi" };
 		}
 
 		public static void BadAssert (string input, CalcumalateError output) {
@@ -261,12 +265,26 @@ namespace TheCalculator.Models {
 			return Regex.IsMatch (token, @"^\d*\.?\d+$");
 		}
 
+		private static bool IsConstant (string token) {
+			return constants.Contains (token);
+		}
+
 		private static bool IsOperator (string token) {
 			return "+-*/^_".Contains (token) || functions.Contains (token);
 		}
 
 		private static bool IsBinaryOperator (string op) {
 			return "+-*/^".Contains (op);
+		}
+
+		private static double Solve (string constant) {
+			switch (constant) {
+				case "π":
+				case "pi":
+					return Math.PI;
+			}
+
+			return double.NaN;
 		}
 
 		private static double Solve (string op, double n) {
@@ -336,11 +354,15 @@ namespace TheCalculator.Models {
 				}
 			}
 
-			//match against the functions
-			string funcMatch = functions.Find (a => input.IndexOf (a) == 0);
-			
-			if (funcMatch != null) {
-				return funcMatch;
+			//match against the lists of tokens that are words
+			List <string> [] tokenWords = { functions, constants };
+
+			foreach (List <string> words in tokenWords) {
+				string m = words.Find (a => input.IndexOf (a) == 0);
+				
+				if (m != null) {
+					return m;
+				}
 			}
 
 			//return NOTHING!
