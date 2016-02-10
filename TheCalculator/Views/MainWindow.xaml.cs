@@ -133,8 +133,8 @@ namespace TheCalculator.Views {
 						this.HistoryIndex = -1;
 					}
 				}
-			} else if (e.Key == Key.Q) {
-				//quit on Q
+			} else if (Keyboard.IsKeyDown (Key.LeftCtrl) || Keyboard.IsKeyDown (Key.RightCtrl) && e.Key == Key.Q) {
+				//quit on ctrl Q
 				Application.Current.Shutdown ();
 			}
 
