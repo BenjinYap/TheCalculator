@@ -11,12 +11,15 @@ namespace TheCalculator.Models {
 			//BadAssert ("1&1", CalcumalateError.UnknownOperator);
 			//BadAssert ("1_1", CalcumalateError.UnknownOperator);
 			//BadAssert ("1++1", CalcumalateError.SyntaxError);
+			//BadAssert ("1**1", CalcumalateError.SyntaxError);
+			//BadAssert ("*/1--1", CalcumalateError.SyntaxError);
+			BadAssert ("_!41--1", CalcumalateError.UnknownOperator);
 
+			Assert ("1--1", 2);
 			Assert ("sin(sin(0))", 0);
 			Assert ("(((sin((((0)))))))", 0);
 			Assert ("(-1)", -1);
 			Assert ("-1", -1);
-			
 			Assert ("1", 1);
 			Assert ("1*2+2", 4);
 			Assert ("1+1*2-1*2", 1);
@@ -28,16 +31,11 @@ namespace TheCalculator.Models {
 			Assert ("1+1*3", 4);
 			Assert ("4/2", 2);
 			Assert ("2^2", 4);
-
 			Assert ("(1+1)*2", 4);
-			
-			
-
 			Assert ("-1+1", 0);
 			Assert ("1+-1", 0);
 			Assert ("1+-1+1", 1);
 
-			
 			Assert ("sin(0)", 0);
 			Assert ("tan(0)", 0);
 			Assert ("cos(0)", 1);
@@ -48,7 +46,6 @@ namespace TheCalculator.Models {
 			Assert ("asin(0)", 0);
 			Assert ("acos(1)", 0);
 			Assert ("atan(0)", 0);
-
 			Assert ("abs(-1)", 1);
 			Assert ("abs(1)", 1);
 			Assert ("abs(-1+abs(-1))", 0);
@@ -83,6 +80,8 @@ namespace TheCalculator.Models {
 		}
 
 		public static CalcumalateResult Calcumalate (string input) {
+			string rawInput = input;
+
 			CalcumalateError bracketError = MissingBracket (input);
 
 			if (bracketError != CalcumalateError.None) {
@@ -133,12 +132,14 @@ namespace TheCalculator.Models {
 
 					continue;
 				} else if (token == ")") {
-					try {
-						token = SolveList (lists).Result.ToString ();
-					} catch (Exception) {
-						return new CalcumalateResult (CalcumalateError.SyntaxError);
-					}
+					CalcumalateResult res = SolveList (lists);
 
+					if (res.Error != CalcumalateError.None) {
+						return new CalcumalateResult (res.Error);
+					} else {
+						token = res.Result.ToString ();
+					}
+					
 					if (lists.Count <= 0) {
 						lists.Add (new List <string> ());
 					}
@@ -153,12 +154,14 @@ namespace TheCalculator.Models {
 			double result = 0;
 			
 			while (lists.Count > 0) {
-				try {
-					result = SolveList (lists).Result;
-				} catch (Exception) {
-					return new CalcumalateResult (CalcumalateError.SyntaxError);
-				}
+				CalcumalateResult res = SolveList (lists);
 
+				if (res.Error != CalcumalateError.None) {
+					return new CalcumalateResult (res.Error);
+				} else {
+					result = res.Result;
+				}
+				
 				if (lists.Count > 0) {
 					lists [lists.Count - 1].Add (result.ToString ());
 				}
@@ -182,64 +185,71 @@ namespace TheCalculator.Models {
 
 		private static CalcumalateResult SolveList (List <List <string>> lists) {
 			List <string> list = lists [lists.Count - 1];
-			
-			while (list.Count > 1) {
-				double n1;
-				double n2 = 0;
-				string op;
 
-				//check if first token is a number
-				if (double.TryParse (list [0], out n1)) {
-					//second token is the operator
-					op = list [1];
+			//keep processing when there are things in the list
+			while (list.Count > 0) {
+				string token = list [0];
 
-					//third token is the second operand
-					n2 = double.Parse (list [2]);
-
-					//remove all 3 tokens from list
-					list.RemoveRange (0, 3);
-				} else {  //if first token is not a number
-					//first token is an operator
-					op = list [0];
-					
-					if (IsBinaryOperator (op)) {
-						//get the first operand from the parent list
-						List <string> previousList = lists [lists.Count - 2];
-						n1 = double.Parse (previousList [previousList.Count - 1]);
-
-						//remove the operand from the parent list
-						previousList.RemoveAt (previousList.Count - 1);
-
-						//second operand is after operator
-						n2 = double.Parse (list [1]);
-					} else {
-						//unary operator
-						//operand is after operator
-						n1 = double.Parse (list [1]);
+				//if token is a math constant, replace the token with the actual value
+				if (IsConstant (token)) {
+					list.RemoveAt (0);
+					list.Insert (0, Solve (token).ToString ());
+				} else if (IsBinaryOperator (token)) {  //if token is binary operator at beginning of list
+					//if there isn't a previous list, something is wrong
+					if (lists.Count < 2) {
+						return new CalcumalateResult (CalcumalateError.SyntaxError);
 					}
 
-					//remove operator and operand from child list
+					List <string> previousList = lists [lists.Count - 2];
+
+					//get the first operand from the previous list
+					double n1 = double.Parse (previousList [previousList.Count - 1]);
+					string op = token;  //current token is the binary operator
+					double n2;  //second operand is after the operator
+
+					//if the second operand isn't there, something is wrong
+					if (double.TryParse (list [1], out n2) == false) {
+						return new CalcumalateResult (CalcumalateError.SyntaxError);
+					}
+
+					//remove the tokens from both lists
+					previousList.RemoveAt (previousList.Count - 1);
 					list.RemoveRange (0, 2);
-				}
-				
-				//solve the expression and put the result at the front of the list
-				double value = 0;
 
-				if (IsBinaryOperator (op)) {
-					value = Solve (op, n1, n2);
-				} else {
-					value = Solve (op, n1);
+					//solve and insert result to front of current list
+					list.Insert (0, Solve (op, n1, n2).ToString ());
+				} else if (IsFunction (token) || token == "_") {  //token is a function or negative operator
+					string op = list [0];
+					double n = double.Parse (list [1]);  //operand is after the operator
+					list.RemoveRange (0, 2);  //remove tokens from list
+					list.Insert (0, Solve (op, n).ToString ());  //solve and insert to front of list
+				} else if (list.Count >= 3) {  //token is a number and there are at least 3 tokens
+					//treat this as a binary operation
+					double n1 = double.Parse (list [0]);  //first operand is current token
+					string op = list [1];  //operator is after first operand
+					double n2;  //second operand is after operator
+
+					//if the second operand isn't there, something is wrong
+					if (double.TryParse (list [2], out n2) == false) {
+						return new CalcumalateResult (CalcumalateError.SyntaxError);
+					}
+
+					list.RemoveRange (0, 3);  //remove tokens from list
+					list.Insert (0, Solve (op, n1, n2).ToString ());  //solve and insert result to front of list
 				}
 
-				list.Insert (0, value.ToString ());
+				//if the list only have one token left, stop the loop
+				if (list.Count == 1) {
+					break;
+				}
 			}
-			
+
+			//the remaining token is a number
 			double result = double.Parse (list [0]);
 
-			if (list.Count == 1) {
-				lists.RemoveAt (lists.Count - 1);
-			}
-
+			//remove the now empty list from the list of lists
+			lists.RemoveAt (lists.Count - 1);
+			
 			return new CalcumalateResult { Result = result };
 		}
 
@@ -275,6 +285,10 @@ namespace TheCalculator.Models {
 
 		private static bool IsBinaryOperator (string op) {
 			return "+-*/^".Contains (op);
+		}
+
+		private static bool IsFunction (string op) {
+			return functions.Contains (op);
 		}
 
 		private static double Solve (string constant) {
