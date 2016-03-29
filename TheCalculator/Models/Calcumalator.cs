@@ -11,10 +11,12 @@ namespace TheCalculator.Models {
 		private static List <string> functions;
 		private static List <string> constants;
 
+		private static double previousAnswer = 0;
+
 		static Calcumalator () {
 			operators = new List <string> { "+", "-", "*", "/", "^" };
 			functions = new List <string> { "asin", "acos", "atan", "sinh", "cosh", "tanh", "sin", "cos", "tan", "abs", "neg" };
-			constants = new List <string> { "π", "pi", "e", };
+			constants = new List <string> { "π", "pi", "e", "ans" };
 		}
 
 		public static CalcumalateResult Calcumalate (string input) {
@@ -110,6 +112,7 @@ namespace TheCalculator.Models {
 				}
 			}
 
+			previousAnswer = result;
 			return new CalcumalateResult { Result = result };
 		}
 
@@ -267,6 +270,8 @@ namespace TheCalculator.Models {
 					return Math.PI;
 				case "e":
 					return Math.E;
+				case "ans":
+					return previousAnswer;
 			}
 
 			return double.NaN;
