@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 namespace TheCalculator.Models {
@@ -13,13 +14,13 @@ namespace TheCalculator.Models {
 		static Calcumalator () {
 			operators = new List <string> { "+", "-", "*", "/", "^" };
 			functions = new List <string> { "asin", "acos", "atan", "sinh", "cosh", "tanh", "sin", "cos", "tan", "abs", "neg" };
-			constants = new List <string> { "π", "pi" };
+			constants = new List <string> { "π", "pi", "e", };
 		}
 
 		public static CalcumalateResult Calcumalate (string input) {
 			string rawInput = input;
 			input = input.Replace (" ", "").ToLower ();
-
+			
 			if (input [0] == '+') {
 				input = input.Substring (1);
 			}
@@ -264,6 +265,8 @@ namespace TheCalculator.Models {
 				case "π":
 				case "pi":
 					return Math.PI;
+				case "e":
+					return Math.E;
 			}
 
 			return double.NaN;
@@ -336,8 +339,8 @@ namespace TheCalculator.Models {
 				}
 			}
 
-			//match against the lists of tokens that are words
-			List <string> [] tokenWords = { functions, constants };
+			//match against the lists of tokens that are words except for neg
+			List <string> [] tokenWords = { functions.Except (new string [] { "neg" }).ToList (), constants };
 
 			foreach (List <string> words in tokenWords) {
 				string m = words.Find (a => input.IndexOf (a) == 0);
