@@ -140,6 +140,11 @@ namespace TheCalculator.Models {
 				}
 			}
 
+			//check for numbers with more than one decimal point
+			if (Regex.IsMatch (input, @"\.\d+\.\d+")) {
+				return CalcumalateError.SyntaxError;
+			}
+
 			return CalcumalateError.None;
 		}
 
@@ -317,7 +322,7 @@ namespace TheCalculator.Models {
 
 		private static string GetNextToken (string input) {
 			string [] patterns = {
-									 @"^\d+",
+									 @"^\d*\.?\d+",
 									 @"^[+\-*/()^]",
 								 };
 			
