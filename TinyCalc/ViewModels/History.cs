@@ -1,7 +1,7 @@
 ﻿
 
 using System.Collections.ObjectModel;
-namespace TheCalculator.ViewModels {
+namespace TinyCalc.ViewModels {
 	public class History:ObservableCollection <HistoryItem> {
 		
 	}

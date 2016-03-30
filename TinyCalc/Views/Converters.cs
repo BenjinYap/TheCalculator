@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-namespace TheCalculator.Views {
+namespace TinyCalc.Views {
 
 	public class IndexToBackgroundConverter:IMultiValueConverter {
 		public object Convert (object [] values, Type targetType, object parameter, CultureInfo culture) {

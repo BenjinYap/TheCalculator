@@ -1,6 +1,6 @@
 ﻿
 
-namespace TheCalculator.ViewModels {
+namespace TinyCalc.ViewModels {
 	public class HistoryItem {
 		public string Input { get; set; }
 		public double Output { get; set; }

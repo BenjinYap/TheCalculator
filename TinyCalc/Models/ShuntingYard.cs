@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-namespace TheCalculator.Models {
+namespace TinyCalc.Models {
 	public static class ShuntingYard {
 
 		//public static void Main (string [] args) {

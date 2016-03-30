@@ -2,8 +2,8 @@
 
 using System;
 using System.Diagnostics;
-using TheCalculator.Models;
-namespace TheCalculator {
+using TinyCalc.Models;
+namespace TinyCalc {
 	public class UnitTest {
 		public static void Main (string [] args) {
 			BadAssert ("(1+1*2+sin(0)", CalcumalateError.MissingCloseBracket);

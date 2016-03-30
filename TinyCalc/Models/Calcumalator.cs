@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-namespace TheCalculator.Models {
+namespace TinyCalc.Models {
 	public static class Calcumalator {
 		
 		private static List <string> operators;

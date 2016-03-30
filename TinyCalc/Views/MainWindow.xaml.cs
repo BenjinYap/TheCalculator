@@ -15,11 +15,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TheCalculator.Localization;
-using TheCalculator.Models;
-using TheCalculator.ViewModels;
+using TinyCalc.Localization;
+using TinyCalc.Models;
+using TinyCalc.ViewModels;
 
-namespace TheCalculator.Views {
+namespace TinyCalc.Views {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
