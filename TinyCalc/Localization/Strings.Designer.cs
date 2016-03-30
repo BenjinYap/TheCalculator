@@ -61,6 +61,15 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TinyCalc.
+        /// </summary>
+        public static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Equation.
         /// </summary>
         public static string Equation {
@@ -93,15 +102,6 @@ namespace TinyCalc.Localization {
         public static string SyntaxError {
             get {
                 return ResourceManager.GetString("SyntaxError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Calculator.
-        /// </summary>
-        public static string TheCalculator {
-            get {
-                return ResourceManager.GetString("TheCalculator", resourceCulture);
             }
         }
         

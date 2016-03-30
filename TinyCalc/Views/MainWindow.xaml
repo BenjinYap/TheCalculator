@@ -6,7 +6,7 @@
         xmlns:views="clr-namespace:TinyCalc.Views"
         ResizeMode="NoResize"
         x:Name="Window"
-        Title="{x:Static str:Strings.TheCalculator}"
+        Title="{x:Static str:Strings.AppName}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         SizeToContent="Height"
         MinWidth="300"
