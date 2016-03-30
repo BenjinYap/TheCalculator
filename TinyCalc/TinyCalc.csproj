@@ -72,6 +72,7 @@
     <Compile Include="Models\Calc.cs" />
     <Compile Include="Models\CalcError.cs" />
     <Compile Include="Models\Modules\BinaryModule.cs" />
+    <Compile Include="Models\Modules\ConstantModule.cs" />
     <Compile Include="Models\Modules\CoreModule.cs" />
     <Compile Include="Models\Modules\FunctionModule.cs" />
     <Compile Include="Models\Modules\IModule.cs" />

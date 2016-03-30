@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 namespace TinyCalc.Models.Modules {
 	public class BinaryModule:IModule {
@@ -59,6 +60,26 @@ namespace TinyCalc.Models.Modules {
 
 		public bool IsExponent (string input) {
 			return input == BinaryModule.Exponent;
+		}
+
+		public double Solve (string num1, string num2, string op) {
+			double n1 = double.Parse (num1);
+			double n2 = double.Parse (num2);
+
+			switch (op) {
+				case BinaryModule.Addition:
+					return n1 + n2;
+				case BinaryModule.Subtraction:
+					return n1 - n2;
+				case BinaryModule.Multiplication:
+					return n1 * n2;
+				case BinaryModule.Division:
+					return n1 / n2;
+				case BinaryModule.Exponent:
+					return Math.Pow (n1, n2);
+			}
+
+			return double.NaN;
 		}
 	}
 }

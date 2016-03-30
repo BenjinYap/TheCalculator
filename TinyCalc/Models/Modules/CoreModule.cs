@@ -31,5 +31,9 @@ namespace TinyCalc.Models.Modules {
 		public bool IsRightBracket (string input) {
 			return input == CoreModule.RightBracket;
 		}
+
+		public double Solve (string input) {
+			return double.Parse (input);
+		}
 	}
 }

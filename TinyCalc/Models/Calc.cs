@@ -5,23 +5,72 @@ using System.Diagnostics;
 using TinyCalc.Models.Modules;
 namespace TinyCalc.Models {
 	public sealed class Calc {
-		private CoreModule core = new CoreModule ();
-		private BinaryModule binary = new BinaryModule ();
+		private readonly CoreModule core = new CoreModule ();
+		private readonly BinaryModule binary = new BinaryModule ();
+		private readonly ConstantModule constant = new ConstantModule ();
 
-		private List <IModule> modules = new List <IModule> ();
+		private readonly List <IModule> modules = new List <IModule> ();
 
 		public Calc () {
 			//create the modules
 			this.modules.Add (core);
 			this.modules.Add (binary);
+			this.modules.Add (constant);
 		}
 
 		public CalcResult Solve (string input) {
 			string postfix = this.ParseInput (input);
 
-			Debug.WriteLine (postfix);
+			//Debug.WriteLine (postfix);
 
-			return new CalcResult (1);
+			CalcResult result = this.ActualSolve (postfix);
+
+			if (result.Error == CalcError.None) {
+				this.constant.PreviousAnswer = result.Result;
+			}
+
+			return result;
+		}
+
+		private CalcResult ActualSolve (string postfix) {
+			List <string> tokens = new List <string> (postfix.Split (' '));
+			
+			//replace all constants with actual values
+			this.SolveConstants (tokens);
+
+			while (tokens.Count > 0) {
+				int nonNumberIndex = tokens.FindIndex (a => core.IsNumber (a) == false);
+
+				//-1 means the only token is a number
+				if (nonNumberIndex == -1) {
+					//parse the number, it is the final answer
+					return new CalcResult (this.core.Solve (tokens [0]));
+				} else if (nonNumberIndex == 0) {  //first token is not a number
+					//if token is not ans then error
+				} else {
+
+				}
+				//} else if (nonNumberIndex > 2) {  //if nonnumber token is greater than 2, something went wrong
+				//	return new CalcResult (CalcError.Unknown);
+				//} else if (nonNumberIndex == 1) {  //nonnumber token is at 1, implies function
+					
+				//} else if (nonNumberIndex == 2) {  //nonnumber token is at 2, implies binary operator
+				//	//solve, remove tokens from list, insert result in place of tokens
+				//	double result = this.binary.Solve (tokens [0], tokens [1], tokens [2]);
+				//	tokens.RemoveRange (0, 3);
+				//	tokens.Insert (0, result.ToString ());
+				//}
+			}
+
+			return new CalcResult (CalcError.Unknown);
+		}
+
+		private void SolveConstants (List <string> tokens) {
+			for (int i = 0; i < tokens.Count; i++) {
+				if (this.constant.IsToken (tokens [i])) {
+					tokens [i] = this.constant.Solve (tokens [i]).ToString ();
+				}
+			}
 		}
 
 		private string ParseInput (string input) {
@@ -57,8 +106,8 @@ namespace TinyCalc.Models {
 
 				//buffer is a token, decide what to do with it
 				if (foundToken) {
-					//if number, push to output
-					if (this.core.IsNumber (buffer)) {
+					//if number or constant, push to output
+					if (this.core.IsNumber (buffer) || this.constant.IsToken (buffer)) {
 						output.Add (buffer);
 					} else if (this.core.IsLeftBracket (buffer)) {  //if left bracket, push to stack
 						stack.Push (buffer);
@@ -90,7 +139,7 @@ namespace TinyCalc.Models {
 			}
 			
 			//join the output and the stack and return the string
-			return string.Join (" ", output) + " " + string.Join (" ", stack.ToArray ());
+			return (string.Join (" ", output) + " " + string.Join (" ", stack.ToArray ())).Trim ();
 		}
 	}
 
@@ -103,7 +152,7 @@ namespace TinyCalc.Models {
 
 		public CalcResult (double result) {
 			this.result = result;
-			this.error = null;
+			this.error = CalcError.None;
 		}
 
 		public CalcResult (CalcError error) {

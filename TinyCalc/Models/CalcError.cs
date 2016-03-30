@@ -1,7 +1,9 @@
 ﻿
 
 namespace TinyCalc.Models {
-	public class CalcError {
+	public enum CalcError {
+		None,
+		Unknown,
 
 	}
 }
