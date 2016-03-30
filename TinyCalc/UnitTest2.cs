@@ -6,6 +6,7 @@ using TinyCalc.Models;
 namespace TinyCalc {
 	public class UnitTest2 {
 		public static void Main (string [] args) {
+			Assert ("1+2-3+4", 1);
 			Assert ("1*2+3", 1);
 			Assert ("1+2^3", 1);
 			Assert ("1+2*3", 1);

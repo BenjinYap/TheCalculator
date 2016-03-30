@@ -21,13 +21,40 @@ namespace TinyCalc.Models.Modules {
 			return tokens.Contains (input);
 		}
 
+		//assumes that op1 and op2 are both binary tokens
 		public bool Op1PrecedenceLessOrEqualOp2 (string op1, string op2) {
+			//if op1 is exponent, then op1 always has higher precedence
 			if (this.IsExponent (op1)) {
 				return false;
 			}
 
-			return (op1 == BinaryModule.Addition || op1 == BinaryModule.Subtraction) &&
-				(op2 == BinaryModule.Multiplication || op2 == BinaryModule.Division);
+			List <List <string>> operators = new List <List <string>> {
+				new List <string> {  //first level of precedence
+					BinaryModule.Addition,
+					BinaryModule.Subtraction,
+				},
+				new List <string> {  //second level of precedence
+					BinaryModule.Multiplication,
+					BinaryModule.Division,
+				},
+			};
+
+			int index1 = -1;  //precedence of op1
+			int index2 = -1;  //precedence of op2
+
+			//determine the precedences of both ops
+			for (int i = 0; i < operators.Count; i++) {
+				if (operators [i].Contains (op1)) {
+					index1 = i;
+				}
+
+				if (operators [i].Contains (op2)) {
+					index2 = i;
+				}
+			}
+			
+			//compare the precedences and return
+			return index1 <= index2;
 		}
 
 		public bool IsExponent (string input) {
