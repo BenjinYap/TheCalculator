@@ -52,7 +52,7 @@ namespace TinyCalc.Views {
 		public MainWindow () {
 			this.History = new History (); 
 			this.HistoryIndex = -1;
-
+			
 			InitializeComponent ();
 			
 			//this.History.Add (new HistoryItem ("awdggawd", 123));

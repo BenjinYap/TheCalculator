@@ -69,6 +69,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Calc.cs" />
+    <Compile Include="Models\CalcError.cs" />
+    <Compile Include="Models\Solvers\BinarySolver.cs" />
+    <Compile Include="Models\Solvers\ISolver.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\HistoryItem.cs" />
