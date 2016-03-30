@@ -38,7 +38,7 @@ namespace TinyCalc.Models {
 				//do things based on the token type
 				switch (token.Type) {
 					case TokenType.Number:
-						//add to output
+						//add to postfix
 						output += token.Value + " ";
 						break;
 					case TokenType.Operator:
@@ -53,7 +53,7 @@ namespace TinyCalc.Models {
 								output += "-";
 							}
 						} else if (op.Value == ")") {
-							//if right bracket, pop stack into output until left bracket is found
+							//if right bracket, pop stack into postfix until left bracket is found
 							while (operatorStack.Count > 0) {
 								Operator topOperator = operatorStack.Pop ();
 								
@@ -61,7 +61,7 @@ namespace TinyCalc.Models {
 								if (topOperator.Value == "(") {
 									break;
 								} else {
-									//not left bracket, push to output
+									//not left bracket, push to postfix
 									output += topOperator.Value + " ";
 								}
 							}
@@ -69,12 +69,12 @@ namespace TinyCalc.Models {
 							//check if this is a minus sign for a negative number
 							//if (token.Value == "-") {
 							//	if (operatorStack.Count > 0 && operatorStack.Peek ().Value == "(") {
-							//		output += token.Value;
+							//		postfix += token.Value;
 							//		break;
 							//	}
 							//}
 
-							//pop operators into output until a lower precedence operator is at the top of stack
+							//pop operators into postfix until a lower precedence operator is at the top of stack
 							while (operatorStack.Count > 0) {
 								Operator topOperator = operatorStack.Peek ();
 								
@@ -82,7 +82,7 @@ namespace TinyCalc.Models {
 								if (topOperator.Value != "(" &&
 									op.Associativity == OperatorAssociativity.Left && op.Precedence <= topOperator.Precedence ||
 									op.Associativity == OperatorAssociativity.Right && op.Precedence < topOperator.Precedence) {
-									//pop operator into output
+									//pop operator into postfix
 									output += operatorStack.Pop ().Value + " ";
 								} else {
 									//found lower precedence, stop

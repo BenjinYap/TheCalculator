@@ -73,6 +73,7 @@
     <Compile Include="Models\CalcError.cs" />
     <Compile Include="Models\Modules\BinaryModule.cs" />
     <Compile Include="Models\Modules\CoreModule.cs" />
+    <Compile Include="Models\Modules\FunctionModule.cs" />
     <Compile Include="Models\Modules\IModule.cs" />
     <Compile Include="UnitTest2.cs" />
     <Compile Include="UnitTest.cs" />

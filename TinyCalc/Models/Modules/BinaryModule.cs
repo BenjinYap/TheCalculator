@@ -20,5 +20,18 @@ namespace TinyCalc.Models.Modules {
 
 			return tokens.Contains (input);
 		}
+
+		public bool Op1PrecedenceLessOrEqualOp2 (string op1, string op2) {
+			if (this.IsExponent (op1)) {
+				return false;
+			}
+
+			return (op1 == BinaryModule.Addition || op1 == BinaryModule.Subtraction) &&
+				(op2 == BinaryModule.Multiplication || op2 == BinaryModule.Division);
+		}
+
+		public bool IsExponent (string input) {
+			return input == BinaryModule.Exponent;
+		}
 	}
 }
