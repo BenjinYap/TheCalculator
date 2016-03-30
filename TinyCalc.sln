@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheCalculator", "TheCalculator\TheCalculator.csproj", "{920F33F3-45DC-4810-996A-B935CF7CDA67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyCalc", "TinyCalc\TinyCalc.csproj", "{920F33F3-45DC-4810-996A-B935CF7CDA67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
