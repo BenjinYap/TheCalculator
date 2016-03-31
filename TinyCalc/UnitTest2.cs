@@ -38,10 +38,10 @@ namespace TinyCalc {
 
 		public static void Assert (string input, double output) {
 			CalcResult result = new Calc ().Solve (input);
-
+			
 			if (Math.Abs (result.Result - output) <= Math.Abs (result.Result * 0.00001)) {
 				
-			} else if (result.Error == CalcError.None) {
+			} else if (result.Error != CalcError.None) {
 				Debug.WriteLine (input + " = " + output + ", GOT " + result.Error);
 			} else {
 				Debug.WriteLine (input + " = " + output + ", GOT " + result.Result);

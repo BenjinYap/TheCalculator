@@ -6,6 +6,8 @@ using System.Diagnostics;
 using TinyCalc.Models.Modules;
 namespace TinyCalc.Models {
 	public sealed class Calc {
+		private const int InfiniteLoopBreakingPoint = 1000;
+
 		private readonly CoreModule core = new CoreModule ();
 		private readonly BinaryModule binary = new BinaryModule ();
 		private readonly ConstantModule constant = new ConstantModule ();
@@ -41,6 +43,14 @@ namespace TinyCalc.Models {
 			//replace all constants with actual values
 			this.SolveConstants (tokens);
 
+			//if there is only one token and it's a number
+			if (tokens.Count == 1 && this.core.IsNumber (tokens [0])) {
+				//parse the number, it is the final answer
+				return new CalcResult (this.core.Solve (tokens [0]));
+			}
+
+			int counter = 0;
+
 			while (tokens.Count > 0) {
 				int nonNumberIndex = tokens.FindIndex (a => core.IsNumber (a) == false);
 
@@ -63,6 +73,12 @@ namespace TinyCalc.Models {
 				//	tokens.RemoveRange (0, 3);
 				//	tokens.Insert (0, result.ToString ());
 				//}
+
+				counter++;
+
+				if (counter >= Calc.InfiniteLoopBreakingPoint) {
+					return new CalcResult (CalcError.InfiniteLoop);
+				}
 			}
 
 			return new CalcResult (CalcError.Unknown);
