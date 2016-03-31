@@ -6,5 +6,7 @@ namespace TinyCalc.Models {
 		Unknown,
 		InfiniteLoop,
 
+		MissingLeftBracket,
+		MissingRightBracket,
 	}
 }

@@ -1,5 +1,5 @@
 ﻿
-
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 namespace TinyCalc.Models.Modules {
@@ -10,6 +10,12 @@ namespace TinyCalc.Models.Modules {
 
 		public CoreModule () {
 			
+		}
+
+		public CalcError VerifyBrackets (string input) {
+			return CalcError.None;
+			//return 
+			//if (input.Count (a => a == CoreModule.LeftBracket) != input.Count (a => a == CoreModule.RightBracket)) 
 		}
 
 		public string GetNextToken (string input) {

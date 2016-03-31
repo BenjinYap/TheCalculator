@@ -11,6 +11,7 @@ namespace TinyCalc.Models {
 		private readonly CoreModule core = new CoreModule ();
 		private readonly OperatorModule operatorr = new OperatorModule ();
 		private readonly ConstantModule constant = new ConstantModule ();
+		private readonly FunctionModule function = new FunctionModule ();
 
 		private readonly List <IModule> modules = new List <IModule> ();
 
@@ -19,6 +20,7 @@ namespace TinyCalc.Models {
 			this.modules.Add (core);
 			this.modules.Add (operatorr);
 			this.modules.Add (constant);
+			this.modules.Add (function);
 		}
 
 		public CalcResult Solve (string input) {
@@ -63,18 +65,23 @@ namespace TinyCalc.Models {
 					//	return new CalcResult (this.core.Solve (tokens [0]));
 					//}
 
-					//if the operator is negation
+					//if the token is negation
 					if (this.operatorr.IsNegation (tokens [nonNumberIndex])) {
 						//solve it, remove the tokens from list, insert result in place
 						double result = this.operatorr.Solve (tokens [nonNumberIndex - 1], tokens [nonNumberIndex]);
 						tokens.RemoveRange (nonNumberIndex - 1, 2);
 						tokens.Insert (nonNumberIndex - 1, result.ToString ());
-					} else if (this.operatorr.IsToken (tokens [nonNumberIndex])) {  //if operator is something other than negation
+					} else if (this.operatorr.IsToken (tokens [nonNumberIndex])) {  //if token is something other than negation
 						//solve it, remove the tokens from list, insert result in place
 						int i = nonNumberIndex;
 						double result = this.operatorr.Solve (tokens [i - 2], tokens [i - 1], tokens [i]);
 						tokens.RemoveRange (i - 2, 3);
 						tokens.Insert (i - 2, result.ToString ());
+					} else if (this.function.IsToken (tokens [nonNumberIndex])) {  //if token is a function
+						//solve it, remove the tokens from list, insert result in place
+						double result = this.function.Solve (tokens [nonNumberIndex - 1], tokens [nonNumberIndex]);
+						tokens.RemoveRange (nonNumberIndex - 1, 2);
+						tokens.Insert (nonNumberIndex - 1, result.ToString ());
 					}
 				}
 				
@@ -151,6 +158,8 @@ namespace TinyCalc.Models {
 
 					//throw away left bracket
 					stack.Pop ();
+				} else if (this.function.IsToken (token)) {
+					stack.Push (token);
 				} else {
 					//if operatorr token, apply precedence and associativity rules
 					if (this.operatorr.IsToken (token)) {
