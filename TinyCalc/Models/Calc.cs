@@ -41,7 +41,7 @@ namespace TinyCalc.Models {
 			List <string> tokens = new List <string> (postfix.Split (' '));
 			
 			//replace all constants with actual values
-			this.SolveConstants (tokens);
+			this.constant.SolveConstants (tokens);
 
 			//if there is only one token and it's a number
 			if (tokens.Count == 1 && this.core.IsNumber (tokens [0])) {
@@ -82,14 +82,6 @@ namespace TinyCalc.Models {
 			}
 
 			return new CalcResult (CalcError.Unknown);
-		}
-
-		private void SolveConstants (List <string> tokens) {
-			for (int i = 0; i < tokens.Count; i++) {
-				if (this.constant.IsToken (tokens [i])) {
-					tokens [i] = this.constant.Solve (tokens [i]).ToString ();
-				}
-			}
 		}
 
 		private string ParseInput (string input) {

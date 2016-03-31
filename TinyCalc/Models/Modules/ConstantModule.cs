@@ -34,6 +34,14 @@ namespace TinyCalc.Models.Modules {
 			return this.tokens.Contains (input);
 		}
 
+		public void SolveConstants (List <string> tokens) {
+			for (int i = 0; i < tokens.Count; i++) {
+				if (this.IsToken (tokens [i])) {
+					tokens [i] = this.Solve (tokens [i]).ToString ();
+				}
+			}
+		}
+
 		public double Solve (string input) {
 			switch (input) {
 				case ConstantModule.Pi:
