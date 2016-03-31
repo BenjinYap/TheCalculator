@@ -24,9 +24,9 @@ namespace TinyCalc.Models {
 		public CalcResult Solve (string input) {
 			string postfix = this.ParseInput (input);
 
-			//Debug.WriteLine (postfix);
+			Debug.WriteLine (postfix);
 
-			//return new CalcResult (1);
+			return new CalcResult (1);
 
 			CalcResult result = this.ActualSolve (postfix);
 
@@ -103,6 +103,7 @@ namespace TinyCalc.Models {
 			Stack <string> stack = new Stack <string> ();
 			
 			//parse token until input is empty
+			//shunting yard starts now!
 			while (input.Length > 0) {
 				string token = "";
 
@@ -128,8 +129,14 @@ namespace TinyCalc.Models {
 					output.Add (token);
 				} else if (this.core.IsLeftBracket (token)) {  //if left bracket, push to stack
 					stack.Push (token);
-				} else if (this.core.IsRightBracket (token)) {
+				} else if (this.core.IsRightBracket (token)) {  //if right bracket, push all the things
+					//push stack onto output until left bracket is found
+					while (this.core.IsLeftBracket (stack.Peek ()) == false) {
+						output.Add (stack.Pop ());
+					}
 
+					//throw away left bracket
+					stack.Pop ();
 				} else {
 					//if binary token, apply precedence and associativity rules
 					if (this.binary.IsToken (token)) {
