@@ -4,8 +4,31 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 namespace TinyCalc.Models.Modules {
 	public class CoreModule:IModule {
+		private const string NumberPattern = @"^\d*\.?\d+";
 		private const string LeftBracket = "(";
 		private const string RightBracket = ")";
+
+		public CoreModule () {
+			
+		}
+
+		public string GetNextToken (string input) {
+			Match match = Regex.Match (input, CoreModule.NumberPattern);
+
+			if (match.Success) {
+				return match.Value;
+			}
+
+			if (input.IndexOf (CoreModule.LeftBracket) == 0) {
+				return CoreModule.LeftBracket;
+			}
+
+			if (input.IndexOf (CoreModule.RightBracket) == 0) {
+				return CoreModule.RightBracket;
+			}
+
+			return "";
+		}
 
 		public bool IsToken (string input) {
 			if (this.IsNumber (input)) {
@@ -21,7 +44,7 @@ namespace TinyCalc.Models.Modules {
 		}
 
 		public bool IsNumber (string input) {
-			return Regex.IsMatch (input, @"^\d*\.?\d+$");
+			return Regex.IsMatch (input, CoreModule.NumberPattern + "$");
 		}
 		
 		public bool IsLeftBracket (string input) {

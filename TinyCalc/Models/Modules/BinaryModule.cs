@@ -10,15 +10,29 @@ namespace TinyCalc.Models.Modules {
 		private const string Division = "/";
 		private const string Exponent = "^";
 
-		public bool IsToken (string input) {
-			List <string> tokens = new List <string> {
+		private readonly List <string> tokens;
+
+		public BinaryModule () {
+			this.tokens = new List <string> {
 				BinaryModule.Addition,
 				BinaryModule.Subtraction,
 				BinaryModule.Multiplication,
 				BinaryModule.Division,
 				BinaryModule.Exponent,
 			};
+		}
 
+		public string GetNextToken (string input) {
+			foreach (string token in this.tokens) {
+				if (input.IndexOf (token) == 0) {
+					return token;
+				}
+			}
+
+			return "";
+		}
+
+		public bool IsToken (string input) {
 			return tokens.Contains (input);
 		}
 

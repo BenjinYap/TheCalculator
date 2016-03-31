@@ -6,5 +6,9 @@ namespace TinyCalc.Models.Modules {
 		public bool IsToken (string input) {
 			return true;
 		}
+
+		public string GetNextToken (string input) {
+			return "";
+		}
 	}
 }

@@ -10,14 +10,28 @@ namespace TinyCalc.Models.Modules {
 
 		public double PreviousAnswer = 0;
 
-		public bool IsToken (string input) {
-			List <string> tokens = new List <string> {
+		private readonly List <string> tokens;
+
+		public ConstantModule () {
+			this.tokens = new List <string> {
 				ConstantModule.Pi,
 				ConstantModule.PiSymbol,
 				ConstantModule.Answer,
 			};
+		}
 
-			return tokens.Contains (input);
+		public string GetNextToken (string input) {
+			foreach (string token in this.tokens) {
+				if (input.IndexOf (token) == 0) {
+					return token;
+				}
+			}
+
+			return "";
+		}
+
+		public bool IsToken (string input) {
+			return this.tokens.Contains (input);
 		}
 
 		public double Solve (string input) {

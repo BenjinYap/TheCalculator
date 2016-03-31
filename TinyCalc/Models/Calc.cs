@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using TinyCalc.Models.Modules;
@@ -22,6 +23,8 @@ namespace TinyCalc.Models {
 			string postfix = this.ParseInput (input);
 
 			//Debug.WriteLine (postfix);
+
+			//return new CalcResult (1);
 
 			CalcResult result = this.ActualSolve (postfix);
 
@@ -48,7 +51,7 @@ namespace TinyCalc.Models {
 				} else if (nonNumberIndex == 0) {  //first token is not a number
 					//if token is not ans then error
 				} else {
-
+					
 				}
 				//} else if (nonNumberIndex > 2) {  //if nonnumber token is greater than 2, something went wrong
 				//	return new CalcResult (CalcError.Unknown);
@@ -83,63 +86,64 @@ namespace TinyCalc.Models {
 			//operator stack
 			Stack <string> stack = new Stack <string> ();
 			
-			//buffer for current token
-			string buffer = "";
-
 			//parse token until input is empty
 			while (input.Length > 0) {
-				//add next character to buffer
-				buffer += input [0];
+				string token = "";
 
-				//remove that character from input
-				input = input.Remove (0, 1);
-
-				bool foundToken = false;
-
-				//ask each module if buffer is a token
+				//check each module to see if they can find a token
 				foreach (IModule module in this.modules) {
-					if (module.IsToken (buffer)) {
-						foundToken = true;
+					token = module.GetNextToken (input);
+
+					if (token != "") {
 						break;
 					}
 				}
 
-				//buffer is a token, decide what to do with it
-				if (foundToken) {
-					//if number or constant, push to output
-					if (this.core.IsNumber (buffer) || this.constant.IsToken (buffer)) {
-						output.Add (buffer);
-					} else if (this.core.IsLeftBracket (buffer)) {  //if left bracket, push to stack
-						stack.Push (buffer);
-					} else if (this.core.IsRightBracket (buffer)) {
+				//no token means unrecognized input, bail
+				if (token == "") {
+					throw new Exception ("PARSE ERROR");
+				}
 
-					} else {
-						//if binary token, apply precedence and associativity rules
-						if (this.binary.IsToken (buffer)) {
-							//if exponent, push to stack
-							if (this.binary.IsExponent (buffer)) {
-								stack.Push (buffer);
-							} else {  //if other binary operators
-								//pop stack onto output as long as top of stack is more important than current operator
-								while (stack.Count > 0 && this.binary.Op1PrecedenceLessOrEqualOp2 (buffer, stack.Peek ())) {
-									output.Add (stack.Pop ());
-								}
-								
-								stack.Push (buffer);
+				//remove the found token from the input
+				input = this.RemoveTokenFromInput (input, token);
+
+				//if number or constant, push to output
+				if (this.core.IsNumber (token) || this.constant.IsToken (token)) {
+					output.Add (token);
+				} else if (this.core.IsLeftBracket (token)) {  //if left bracket, push to stack
+					stack.Push (token);
+				} else if (this.core.IsRightBracket (token)) {
+
+				} else {
+					//if binary token, apply precedence and associativity rules
+					if (this.binary.IsToken (token)) {
+						//if exponent, push to stack
+						if (this.binary.IsExponent (token)) {
+							stack.Push (token);
+						} else {  //if other binary operators
+							//pop stack onto output as long as top of stack is more important than current operator
+							while (stack.Count > 0 && this.binary.Op1PrecedenceLessOrEqualOp2 (token, stack.Peek ())) {
+								output.Add (stack.Pop ());
 							}
+								
+							stack.Push (token);
 						}
 					}
-
-					buffer = "";
 				}
 			}
 
-			if (buffer.Length > 0) {
-				Debug.WriteLine ("ERROR");
-			}
-			
 			//join the output and the stack and return the string
 			return (string.Join (" ", output) + " " + string.Join (" ", stack.ToArray ())).Trim ();
+		}
+
+		private string RemoveTokenFromInput (string input, string token) {
+			int pos = input.IndexOf (token);
+
+			if (pos < 0) {
+				return input;
+			}
+			
+			return input.Substring (0, pos) + "" + input.Substring (pos + token.Length);
 		}
 	}
 
