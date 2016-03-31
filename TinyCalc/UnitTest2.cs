@@ -6,7 +6,8 @@ using TinyCalc.Models;
 namespace TinyCalc {
 	public class UnitTest2 {
 		public static void Main (string [] args) {
-			//Assert ("(1))", 1);
+			BadAssert ("(1))", CalcError.MissingLeftBracket);
+
 			Assert ("abs(5)", 5);
 			Assert ("-abs(-5)", -5);
 
@@ -28,43 +29,43 @@ namespace TinyCalc {
 			Assert ("π", Math.PI);
 			Assert ("π+pi", Math.PI * 2);
 
-			//Assert ("pi+1", Math.PI + 1);
-			//Assert ("-1+1", 0);
-			//Assert ("1---1", 0);
-			//Assert ("-1", -1);
-			//Assert ("-----1", -1);
-			//Assert ("-(-(-1))", -1);
-			//Assert ("--1-1", 0);
-			//Assert ("-1^2", -1);
+			Assert ("pi+1", Math.PI + 1);
+			Assert ("-1+1", 0);
+			Assert ("1---1", 0);
+			Assert ("-1", -1);
+			Assert ("-----1", -1);
+			Assert ("-(-(-1))", -1);
+			Assert ("--1-1", 0);
+			Assert ("-1^2", -1);
 
-			//Assert ("((1))", 1);
-			//Assert ("(1+1)", 2);
-			//Assert ("(1+1)*2", 4);
+			Assert ("((1))", 1);
+			Assert ("(1+1)", 2);
+			Assert ("(1+1)*2", 4);
 
-			//Assert ("pi", Math.PI);
-			//Assert ("1.557", 1.557);
-			//Assert ("-1.557", -1.557);
+			Assert ("pi", Math.PI);
+			Assert ("1.557", 1.557);
+			Assert ("-1.557", -1.557);
 
-			//Assert ("1", 1);
-			//Assert ("1*2+2", 4);
-			//Assert ("1+1*2-1*2", 1);
-			//Assert ("1*2^2^2", 16);
-			//Assert ("1*2+1+4/2", 5);
-			//Assert ("1", 1);
-			//Assert ("1+1-1", 1);
-			//Assert ("1-1+1", 1);
-			//Assert ("1+1*3", 4);
-			//Assert ("4/2", 2);
-			//Assert ("2^2", 4);
+			Assert ("1", 1);
+			Assert ("1*2+2", 4);
+			Assert ("1+1*2-1*2", 1);
+			Assert ("1*2^2^2", 16);
+			Assert ("1*2+1+4/2", 5);
+			Assert ("1", 1);
+			Assert ("1+1-1", 1);
+			Assert ("1-1+1", 1);
+			Assert ("1+1*3", 4);
+			Assert ("4/2", 2);
+			Assert ("2^2", 4);
 
-			//Assert ("1+2-3+4", 4);
-			//Assert ("1*2+3", 5);
-			//Assert ("1+2^3", 9);
-			//Assert ("1+2*3", 7);
+			Assert ("1+2-3+4", 4);
+			Assert ("1*2+3", 5);
+			Assert ("1+2^3", 9);
+			Assert ("1+2*3", 7);
 		}
 
-		public static void BadAssert (string input, CalcumalateError output) {
-			CalcumalateResult result = Calcumalator.Calcumalate (input);
+		public static void BadAssert (string input, CalcError output) {
+			CalcResult result = new Calc ().Solve (input);
 
 			if (result.Error != output) {
 				Debug.WriteLine (input + " = " + output.ToString () + ", GOT " + result.Error.ToString ());

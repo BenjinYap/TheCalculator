@@ -24,12 +24,16 @@ namespace TinyCalc.Models {
 		}
 
 		public CalcResult Solve (string input) {
-			string postfix = this.ParseInput (input);
+			ParseResult parseResult = this.ParseInput (input);
 
-			//Debug.WriteLine (postfix);
+			if (parseResult.Error != CalcError.None) {
+				return new CalcResult (parseResult.Error);
+			}
+
+			//Debug.WriteLine (parseResult.Output);
 			//return new CalcResult (1);
 
-			CalcResult result = this.ActualSolve (postfix);
+			CalcResult result = this.ActualSolve (parseResult.Output);
 
 			if (result.Error == CalcError.None) {
 				this.constant.PreviousAnswer = result.Result;
@@ -67,18 +71,18 @@ namespace TinyCalc.Models {
 
 					//if the token is negation
 					if (this.operatorr.IsNegation (tokens [nonNumberIndex])) {
-						//solve it, remove the tokens from list, insert result in place
+						//solve it, remove the tokens from list, insert output in place
 						double result = this.operatorr.Solve (tokens [nonNumberIndex - 1], tokens [nonNumberIndex]);
 						tokens.RemoveRange (nonNumberIndex - 1, 2);
 						tokens.Insert (nonNumberIndex - 1, result.ToString ());
 					} else if (this.operatorr.IsToken (tokens [nonNumberIndex])) {  //if token is something other than negation
-						//solve it, remove the tokens from list, insert result in place
+						//solve it, remove the tokens from list, insert output in place
 						int i = nonNumberIndex;
 						double result = this.operatorr.Solve (tokens [i - 2], tokens [i - 1], tokens [i]);
 						tokens.RemoveRange (i - 2, 3);
 						tokens.Insert (i - 2, result.ToString ());
 					} else if (this.function.IsToken (tokens [nonNumberIndex])) {  //if token is a function
-						//solve it, remove the tokens from list, insert result in place
+						//solve it, remove the tokens from list, insert output in place
 						double result = this.function.Solve (tokens [nonNumberIndex - 1], tokens [nonNumberIndex]);
 						tokens.RemoveRange (nonNumberIndex - 1, 2);
 						tokens.Insert (nonNumberIndex - 1, result.ToString ());
@@ -110,9 +114,15 @@ namespace TinyCalc.Models {
 			return input;
 		}
 
-		private string ParseInput (string input) {
+		private ParseResult ParseInput (string input) {
 			//remove all whitespace and convert to lower
 			input = input.Replace (" ", "").ToLower ();
+
+			CalcError error = this.core.VerifyBrackets (input);
+
+			if (error != CalcError.None) {
+				return new ParseResult (error);
+			}
 
 			//convert negation sign to a specific negation function
 			input = this.ConvertNegationSign (input);
@@ -179,7 +189,7 @@ namespace TinyCalc.Models {
 			}
 
 			//join the output and the stack and return the string
-			return (string.Join (" ", output) + " " + string.Join (" ", stack.ToArray ())).Trim ();
+			return new ParseResult ((string.Join (" ", output) + " " + string.Join (" ", stack.ToArray ())).Trim ());
 		}
 
 		private string RemoveTokenFromInput (string input, string token) {
@@ -207,6 +217,24 @@ namespace TinyCalc.Models {
 
 		public CalcResult (CalcError error) {
 			this.result = double.NaN;
+			this.error = error;
+		}
+	}
+
+	public sealed class ParseResult {
+		private string output;
+		public string Output { get { return this.output; } }
+
+		private CalcError error;
+		public CalcError Error { get { return this.error; } }
+
+		public ParseResult (string result) {
+			this.output = result;
+			this.error = CalcError.None;
+		}
+
+		public ParseResult (CalcError error) {
+			this.output = "";
 			this.error = error;
 		}
 	}
