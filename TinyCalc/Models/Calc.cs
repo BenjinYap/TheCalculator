@@ -9,7 +9,7 @@ namespace TinyCalc.Models {
 		private const int InfiniteLoopBreakingPoint = 1000;
 
 		private readonly CoreModule core = new CoreModule ();
-		private readonly BinaryModule binary = new BinaryModule ();
+		private readonly OperatorModule operatorr = new OperatorModule ();
 		private readonly ConstantModule constant = new ConstantModule ();
 
 		private readonly List <IModule> modules = new List <IModule> ();
@@ -17,7 +17,7 @@ namespace TinyCalc.Models {
 		public Calc () {
 			//create the modules
 			this.modules.Add (core);
-			this.modules.Add (binary);
+			this.modules.Add (operatorr);
 			this.modules.Add (constant);
 		}
 
@@ -67,9 +67,9 @@ namespace TinyCalc.Models {
 				//	return new CalcResult (CalcError.Unknown);
 				//} else if (nonNumberIndex == 1) {  //nonnumber token is at 1, implies function
 					
-				//} else if (nonNumberIndex == 2) {  //nonnumber token is at 2, implies binary operator
+				//} else if (nonNumberIndex == 2) {  //nonnumber token is at 2, implies operatorr operator
 				//	//solve, remove tokens from list, insert result in place of tokens
-				//	double result = this.binary.Solve (tokens [0], tokens [1], tokens [2]);
+				//	double result = this.operatorr.Solve (tokens [0], tokens [1], tokens [2]);
 				//	tokens.RemoveRange (0, 3);
 				//	tokens.Insert (0, result.ToString ());
 				//}
@@ -84,9 +84,27 @@ namespace TinyCalc.Models {
 			return new CalcResult (CalcError.Unknown);
 		}
 
+		private string ConvertNegationSign (string input) {
+			for (int i = 0; i < input.Length; i++) {
+				if (this.operatorr.IsSubtraction (input [i].ToString ())) {
+					//if minus sign is at the start, after an operator, or after a bracket
+					if (i == 0 || this.operatorr.IsToken (input [i - 1].ToString ()) || this.core.IsLeftBracket (input [i - 1].ToString ())) {
+						input = input.Substring (0, i) + "_" + input.Substring (i + 1);
+					}
+				}
+			}
+
+			Debug.WriteLine (input);
+
+			return input;
+		}
+
 		private string ParseInput (string input) {
 			//remove all whitespace and convert to lower
 			input = input.Replace (" ", "").ToLower ();
+
+			//convert negation sign to a specific negation function
+			input = this.ConvertNegationSign (input);
 
 			//output string list
 			List <string> output = new List <string> ();
@@ -130,14 +148,14 @@ namespace TinyCalc.Models {
 					//throw away left bracket
 					stack.Pop ();
 				} else {
-					//if binary token, apply precedence and associativity rules
-					if (this.binary.IsToken (token)) {
+					//if operatorr token, apply precedence and associativity rules
+					if (this.operatorr.IsToken (token)) {
 						//if exponent, push to stack
-						if (this.binary.IsExponent (token)) {
+						if (this.operatorr.IsExponent (token)) {
 							stack.Push (token);
-						} else {  //if other binary operators
+						} else {  //if other operatorr operators
 							//pop stack onto output as long as top of stack is more important than current operator
-							while (stack.Count > 0 && this.binary.Op1PrecedenceLessOrEqualOp2 (token, stack.Peek ())) {
+							while (stack.Count > 0 && this.operatorr.Op1PrecedenceLessOrEqualOp2 (token, stack.Peek ())) {
 								output.Add (stack.Pop ());
 							}
 								

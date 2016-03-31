@@ -6,9 +6,13 @@ using TinyCalc.Models;
 namespace TinyCalc {
 	public class UnitTest2 {
 		public static void Main (string [] args) {
-			Assert ("((1))", 1);
-			Assert ("(1+1)", 2);
-			Assert ("(1+1)*2", 4);
+			//Assert ("-1", -1);
+			//Assert ("----1-1", -1);
+			Assert ("-1^2", 1);
+
+			//Assert ("((1))", 1);
+			//Assert ("(1+1)", 2);
+			//Assert ("(1+1)*2", 4);
 
 			//Assert ("pi", Math.PI);
 			//Assert ("1.557", 1.557);

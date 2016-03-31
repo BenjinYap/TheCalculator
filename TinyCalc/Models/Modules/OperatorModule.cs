@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 namespace TinyCalc.Models.Modules {
-	public class BinaryModule:IModule {
+	public class OperatorModule:IModule {
+		private const string Negation = "_";
+
 		private const string Addition = "+";
 		private const string Subtraction = "-";
 		private const string Multiplication = "*";
@@ -12,13 +14,15 @@ namespace TinyCalc.Models.Modules {
 
 		private readonly List <string> tokens;
 
-		public BinaryModule () {
+		public OperatorModule () {
 			this.tokens = new List <string> {
-				BinaryModule.Addition,
-				BinaryModule.Subtraction,
-				BinaryModule.Multiplication,
-				BinaryModule.Division,
-				BinaryModule.Exponent,
+				OperatorModule.Negation,
+
+				OperatorModule.Addition,
+				OperatorModule.Subtraction,
+				OperatorModule.Multiplication,
+				OperatorModule.Division,
+				OperatorModule.Exponent,
 			};
 		}
 
@@ -36,7 +40,11 @@ namespace TinyCalc.Models.Modules {
 			return tokens.Contains (input);
 		}
 
-		//assumes that op1 and op2 are both binary tokens
+		public bool IsSubtraction (string input) {
+			return input == OperatorModule.Subtraction;
+		}
+
+		//assumes that op1 and op2 are both operatorr tokens
 		public bool Op1PrecedenceLessOrEqualOp2 (string op1, string op2) {
 			//if op1 is exponent, then op1 always has higher precedence
 			if (this.IsExponent (op1)) {
@@ -45,12 +53,15 @@ namespace TinyCalc.Models.Modules {
 
 			List <List <string>> operators = new List <List <string>> {
 				new List <string> {  //first level of precedence
-					BinaryModule.Addition,
-					BinaryModule.Subtraction,
+					OperatorModule.Addition,
+					OperatorModule.Subtraction,
 				},
 				new List <string> {  //second level of precedence
-					BinaryModule.Multiplication,
-					BinaryModule.Division,
+					OperatorModule.Multiplication,
+					OperatorModule.Division,
+				},
+				new List <string> {  //thid level of precedence
+					OperatorModule.Negation,
 				},
 			};
 
@@ -73,7 +84,7 @@ namespace TinyCalc.Models.Modules {
 		}
 
 		public bool IsExponent (string input) {
-			return input == BinaryModule.Exponent;
+			return input == OperatorModule.Exponent;
 		}
 
 		public double Solve (string num1, string num2, string op) {
@@ -81,15 +92,15 @@ namespace TinyCalc.Models.Modules {
 			double n2 = double.Parse (num2);
 
 			switch (op) {
-				case BinaryModule.Addition:
+				case OperatorModule.Addition:
 					return n1 + n2;
-				case BinaryModule.Subtraction:
+				case OperatorModule.Subtraction:
 					return n1 - n2;
-				case BinaryModule.Multiplication:
+				case OperatorModule.Multiplication:
 					return n1 * n2;
-				case BinaryModule.Division:
+				case OperatorModule.Division:
 					return n1 / n2;
-				case BinaryModule.Exponent:
+				case OperatorModule.Exponent:
 					return Math.Pow (n1, n2);
 			}
 

@@ -176,12 +176,12 @@ namespace TinyCalc.Models {
 				if (IsConstant (token)) {
 					list.RemoveAt (0);
 					list.Insert (0, Solve (token).ToString ());
-				} else if (IsBinaryOperator (token)) {  //if token is binary operator at beginning of list
+				} else if (IsBinaryOperator (token)) {  //if token is operatorr operator at beginning of list
 					List <string> previousList = lists [lists.Count - 2];
 
 					//get the first operand from the previous list
 					double n1 = double.Parse (previousList [previousList.Count - 1]);
-					string op = token;  //current token is the binary operator
+					string op = token;  //current token is the operatorr operator
 					double n2 = double.Parse (list [1]);  //second operand is after the operator
  
 					//remove the tokens from both lists
@@ -197,7 +197,7 @@ namespace TinyCalc.Models {
 					list.RemoveRange (0, 2);  //remove tokens from list
 					list.Insert (0, Solve (op, n).ToString ());  //solve and insert to front of list
 				} else if (list.Count >= 3) {  //token is a number and there are at least 3 tokens
-					//treat this as a binary operation
+					//treat this as a operatorr operation
 					double n1 = double.Parse (list [0]);  //first operand is current token
 					string op = list [1];  //operator is after first operand
 					double n2 = double.Parse (list [2]);  //second operand is after operator
