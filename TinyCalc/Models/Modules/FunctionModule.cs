@@ -33,18 +33,18 @@ namespace TinyCalc.Models.Modules {
 			};
 		}
 
-		public CalcError VerifyBrackets (string input) {
-			Match match = Regex.Match (input, "^(" + string.Join ("|", this.tokens) + @")([^a-zA-Z]|$)");
-
-			if (input.Count (a => a.ToString () == CoreModule.LeftBracket) != match.Groups.Count) {
-				return CalcError.MissingFunctionBrackets;
+		public CalcResult VerifyBrackets (string input) {
+			MatchCollection matches = Regex.Matches (input, "(" + string.Join ("|", this.tokens) + @")([^a-zA-Z]|$)");
+			
+			if (matches.Count > 0 && input.Count (a => a.ToString () == CoreModule.LeftBracket) != matches.Count) {
+				return new CalcResult (CalcError.MissingFunctionBrackets);
 			}
 			
-			return CalcError.None;
+			return new CalcResult (CalcError.None);
 		}
 
 		public string GetNextToken (string input) {
-			Match match = Regex.Match (input, "^(" + string.Join ("|", this.tokens) + @")\(");
+			Match match = Regex.Match (input, "^(" + string.Join ("|", this.tokens) + @")(?=\()");
 
 			if (match.Success) {
 				return match.Value;

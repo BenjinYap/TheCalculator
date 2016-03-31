@@ -12,17 +12,17 @@ namespace TinyCalc.Models.Modules {
 			
 		}
 
-		public CalcError VerifyBrackets (string input) {
+		public CalcResult VerifyBrackets (string input) {
 			int leftCount = input.Count (a => a.ToString () == CoreModule.LeftBracket);
 			int rightCount = input.Count (a => a.ToString () == CoreModule.RightBracket);
 			
 			if (leftCount < rightCount) {
-				return CalcError.MissingLeftBracket;
+				return new CalcResult (CalcError.MissingLeftBracket);
 			} else if (leftCount > rightCount) {
-				return CalcError.MissingRightBracket;
+				return new CalcResult (CalcError.MissingRightBracket);
 			}
 
-			return CalcError.None;
+			return new CalcResult (CalcError.None);
 		}
 
 		public string GetNextToken (string input) {

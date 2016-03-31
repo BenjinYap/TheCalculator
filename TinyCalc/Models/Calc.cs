@@ -27,7 +27,7 @@ namespace TinyCalc.Models {
 			ParseResult parseResult = this.ParseInput (input);
 
 			if (parseResult.Error != CalcError.None) {
-				return new CalcResult (parseResult.Error);
+				return new CalcResult (parseResult.Error, parseResult.ErrorObject);
 			}
 
 			//Debug.WriteLine (parseResult.Output);
@@ -118,16 +118,16 @@ namespace TinyCalc.Models {
 			//remove all whitespace and convert to lower
 			input = input.Replace (" ", "").ToLower ();
 
-			CalcError error = this.core.VerifyBrackets (input);
+			CalcResult result = this.core.VerifyBrackets (input);
 
-			if (error != CalcError.None) {
-				return new ParseResult (error);
+			if (result.Error != CalcError.None) {
+				return new ParseResult (result.Error, result.ErrorObject);
 			}
 
-			error = this.function.VerifyBrackets (input);
+			result = this.function.VerifyBrackets (input);
 
-			if (error != CalcError.None) {
-				return new ParseResult (error);
+			if (result.Error != CalcError.None) {
+				return new ParseResult (result.Error, result.ErrorObject);
 			}
 
 			//convert negation sign to a specific negation function
@@ -155,7 +155,7 @@ namespace TinyCalc.Models {
 
 				//no token means unrecognized input, bail
 				if (token == "") {
-					return new ParseResult (CalcError.UnknownToken);
+					return new ParseResult (CalcError.UnknownToken, input);
 				}
 
 				//remove the found token from the input
@@ -216,14 +216,25 @@ namespace TinyCalc.Models {
 		private CalcError error;
 		public CalcError Error { get { return this.error; } }
 
+		private string errorObject;
+		public string ErrorObject { get { return this.errorObject; } }
+
 		public CalcResult (double result) {
 			this.result = result;
 			this.error = CalcError.None;
+			this.errorObject = "";
 		}
 
 		public CalcResult (CalcError error) {
 			this.result = double.NaN;
 			this.error = error;
+			this.errorObject = "";
+		}
+
+		public CalcResult (CalcError error, string errorObject) {
+			this.result = double.NaN;
+			this.error = error;
+			this.errorObject = errorObject;
 		}
 	}
 
@@ -234,14 +245,25 @@ namespace TinyCalc.Models {
 		private CalcError error;
 		public CalcError Error { get { return this.error; } }
 
+		private string errorObject;
+		public string ErrorObject { get { return this.errorObject; } }
+
 		public ParseResult (string result) {
 			this.output = result;
 			this.error = CalcError.None;
+			this.errorObject = "";
 		}
 
 		public ParseResult (CalcError error) {
 			this.output = "";
 			this.error = error;
+			this.errorObject = "";
+		}
+
+		public ParseResult (CalcError error, string errorObject) {
+			this.output = "";
+			this.error = error;
+			this.errorObject = errorObject;
 		}
 	}
 }

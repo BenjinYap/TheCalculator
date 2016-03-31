@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 namespace TinyCalc.Models.Modules {
 	public class ConstantModule:IModule {
 		private const string Pi = "pi";
@@ -21,10 +22,10 @@ namespace TinyCalc.Models.Modules {
 		}
 
 		public string GetNextToken (string input) {
-			foreach (string token in this.tokens) {
-				if (input.IndexOf (token) == 0) {
-					return token;
-				}
+			Match match = Regex.Match (input, "^(" + string.Join ("|", this.tokens) + @")(?=[^a-zA-Z]|$)");
+
+			if (match.Success) {
+				return match.Value;
 			}
 
 			return "";
