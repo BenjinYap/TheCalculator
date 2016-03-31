@@ -6,34 +6,38 @@ using TinyCalc.Models;
 namespace TinyCalc {
 	public class UnitTest2 {
 		public static void Main (string [] args) {
-			//Assert ("-1", -1);
-			//Assert ("----1-1", -1);
-			Assert ("-1^2", 1);
+			Assert ("-1+1", 0);
+			Assert ("1---1", 0);
+			Assert ("-1", -1);
+			Assert ("-----1", -1);
+			Assert ("-(-(-1))", -1);
+			Assert ("--1-1", 0);
+			Assert ("-1^2", -1);
 
-			//Assert ("((1))", 1);
-			//Assert ("(1+1)", 2);
-			//Assert ("(1+1)*2", 4);
+			Assert ("((1))", 1);
+			Assert ("(1+1)", 2);
+			Assert ("(1+1)*2", 4);
 
-			//Assert ("pi", Math.PI);
-			//Assert ("1.557", 1.557);
+			Assert ("pi", Math.PI);
+			Assert ("1.557", 1.557);
+			Assert ("-1.557", -1.557);
 
-			//Assert ("1", 1);
-			//Assert ("1*2+2", 4);
-			//Assert ("1+1*2-1*2", 1);
-			//Assert ("1*2^2^2", 16);
-			//Assert ("1*2+1+4/2", 5);
-			//Assert ("1", 1);
-			//Assert ("1+1-1", 1);
-			//Assert ("1-1+1", 1);
-			//Assert ("1+1*3", 4);
-			//Assert ("4/2", 2);
-			//Assert ("2^2", 4);
+			Assert ("1", 1);
+			Assert ("1*2+2", 4);
+			Assert ("1+1*2-1*2", 1);
+			Assert ("1*2^2^2", 16);
+			Assert ("1*2+1+4/2", 5);
+			Assert ("1", 1);
+			Assert ("1+1-1", 1);
+			Assert ("1-1+1", 1);
+			Assert ("1+1*3", 4);
+			Assert ("4/2", 2);
+			Assert ("2^2", 4);
 
-			//Assert ("1+2-3+4", 1);
-			//Assert ("1*2+3", 5);
-			//Assert ("1+2^3", 1);
-			//Assert ("1+2*3", 1);
-			//Assert ("1+2-3/4*5", 1);
+			Assert ("1+2-3+4", 4);
+			Assert ("1*2+3", 5);
+			Assert ("1+2^3", 9);
+			Assert ("1+2*3", 7);
 		}
 
 		public static void BadAssert (string input, CalcumalateError output) {

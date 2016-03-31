@@ -44,6 +44,10 @@ namespace TinyCalc.Models.Modules {
 			return input == OperatorModule.Subtraction;
 		}
 
+		public bool IsNegation (string input) {
+			return input == OperatorModule.Negation;
+		}
+
 		//assumes that op1 and op2 are both operatorr tokens
 		public bool Op1PrecedenceLessOrEqualOp2 (string op1, string op2) {
 			//if op1 is exponent, then op1 always has higher precedence
@@ -85,6 +89,17 @@ namespace TinyCalc.Models.Modules {
 
 		public bool IsExponent (string input) {
 			return input == OperatorModule.Exponent;
+		}
+
+		public double Solve (string num, string op) {
+			double n = double.Parse (num);
+
+			switch (op) {
+				case OperatorModule.Negation:
+					return -n;
+			}
+
+			return double.NaN;
 		}
 
 		public double Solve (string num1, string num2, string op) {

@@ -24,9 +24,8 @@ namespace TinyCalc.Models {
 		public CalcResult Solve (string input) {
 			string postfix = this.ParseInput (input);
 
-			Debug.WriteLine (postfix);
-
-			return new CalcResult (1);
+			//Debug.WriteLine (postfix);
+			//return new CalcResult (1);
 
 			CalcResult result = this.ActualSolve (postfix);
 
@@ -52,28 +51,33 @@ namespace TinyCalc.Models {
 			int counter = 0;
 
 			while (tokens.Count > 0) {
-				int nonNumberIndex = tokens.FindIndex (a => core.IsNumber (a) == false);
+				int nonNumberIndex = tokens.FindIndex (a => core.IsNumberWithNegative (a) == false);
 
 				//-1 means the only token is a number
 				if (nonNumberIndex == -1) {
 					//parse the number, it is the final answer
 					return new CalcResult (this.core.Solve (tokens [0]));
-				} else if (nonNumberIndex == 0) {  //first token is not a number
-					//if token is not ans then error
 				} else {
-					
-				}
-				//} else if (nonNumberIndex > 2) {  //if nonnumber token is greater than 2, something went wrong
-				//	return new CalcResult (CalcError.Unknown);
-				//} else if (nonNumberIndex == 1) {  //nonnumber token is at 1, implies function
-					
-				//} else if (nonNumberIndex == 2) {  //nonnumber token is at 2, implies operatorr operator
-				//	//solve, remove tokens from list, insert result in place of tokens
-				//	double result = this.operatorr.Solve (tokens [0], tokens [1], tokens [2]);
-				//	tokens.RemoveRange (0, 3);
-				//	tokens.Insert (0, result.ToString ());
-				//}
+					//if (tokens.Count == 0 && this.operatorr.IsNegation (tokens [0][0].ToString ()) && this.core.IsNumber (tokens [0].Substring (1))) {
+					//	//parse the number, it is the final answer
+					//	return new CalcResult (this.core.Solve (tokens [0]));
+					//}
 
+					//if the operator is negation
+					if (this.operatorr.IsNegation (tokens [nonNumberIndex])) {
+						//solve it, remove the tokens from list, insert result in place
+						double result = this.operatorr.Solve (tokens [nonNumberIndex - 1], tokens [nonNumberIndex]);
+						tokens.RemoveRange (nonNumberIndex - 1, 2);
+						tokens.Insert (nonNumberIndex - 1, result.ToString ());
+					} else if (this.operatorr.IsToken (tokens [nonNumberIndex])) {  //if operator is something other than negation
+						//solve it, remove the tokens from list, insert result in place
+						int i = nonNumberIndex;
+						double result = this.operatorr.Solve (tokens [i - 2], tokens [i - 1], tokens [i]);
+						tokens.RemoveRange (i - 2, 3);
+						tokens.Insert (i - 2, result.ToString ());
+					}
+				}
+				
 				counter++;
 
 				if (counter >= Calc.InfiniteLoopBreakingPoint) {
@@ -94,7 +98,7 @@ namespace TinyCalc.Models {
 				}
 			}
 
-			Debug.WriteLine (input);
+			//Debug.WriteLine (input);
 
 			return input;
 		}
@@ -151,7 +155,7 @@ namespace TinyCalc.Models {
 					//if operatorr token, apply precedence and associativity rules
 					if (this.operatorr.IsToken (token)) {
 						//if exponent, push to stack
-						if (this.operatorr.IsExponent (token)) {
+						if (this.operatorr.IsExponent (token) || this.operatorr.IsNegation (token)) {
 							stack.Push (token);
 						} else {  //if other operatorr operators
 							//pop stack onto output as long as top of stack is more important than current operator

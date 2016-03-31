@@ -46,6 +46,10 @@ namespace TinyCalc.Models.Modules {
 		public bool IsNumber (string input) {
 			return Regex.IsMatch (input, CoreModule.NumberPattern + "$");
 		}
+
+		public bool IsNumberWithNegative (string input) {
+			return Regex.IsMatch (input, "^-?" + CoreModule.NumberPattern.Substring (1) + "$");
+		}
 		
 		public bool IsLeftBracket (string input) {
 			return input == CoreModule.LeftBracket;
