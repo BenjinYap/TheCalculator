@@ -1,7 +1,8 @@
 ﻿
-
+using System.Linq;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 namespace TinyCalc.Models.Modules {
 	public class FunctionModule:IModule {
 		private const string AbsoluteValue = "abs";
@@ -32,11 +33,21 @@ namespace TinyCalc.Models.Modules {
 			};
 		}
 
+		public CalcError VerifyBrackets (string input) {
+			Match match = Regex.Match (input, "^(" + string.Join ("|", this.tokens) + @")([^a-zA-Z]|$)");
+
+			if (input.Count (a => a.ToString () == CoreModule.LeftBracket) != match.Groups.Count) {
+				return CalcError.MissingFunctionBrackets;
+			}
+			
+			return CalcError.None;
+		}
+
 		public string GetNextToken (string input) {
-			foreach (string token in this.tokens) {
-				if (input.IndexOf (token) == 0) {
-					return token;
-				}
+			Match match = Regex.Match (input, "^(" + string.Join ("|", this.tokens) + @")\(");
+
+			if (match.Success) {
+				return match.Value;
 			}
 
 			return "";

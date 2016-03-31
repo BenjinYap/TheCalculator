@@ -124,6 +124,12 @@ namespace TinyCalc.Models {
 				return new ParseResult (error);
 			}
 
+			error = this.function.VerifyBrackets (input);
+
+			if (error != CalcError.None) {
+				return new ParseResult (error);
+			}
+
 			//convert negation sign to a specific negation function
 			input = this.ConvertNegationSign (input);
 
@@ -149,7 +155,7 @@ namespace TinyCalc.Models {
 
 				//no token means unrecognized input, bail
 				if (token == "") {
-					throw new Exception ("PARSE ERROR");
+					return new ParseResult (CalcError.UnknownToken);
 				}
 
 				//remove the found token from the input

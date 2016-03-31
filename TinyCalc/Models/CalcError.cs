@@ -5,8 +5,10 @@ namespace TinyCalc.Models {
 		None,
 		Unknown,
 		InfiniteLoop,
+		UnknownToken,
 
 		MissingLeftBracket,
 		MissingRightBracket,
+		MissingFunctionBrackets,
 	}
 }

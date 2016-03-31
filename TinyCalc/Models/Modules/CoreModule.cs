@@ -5,8 +5,8 @@ using System.Text.RegularExpressions;
 namespace TinyCalc.Models.Modules {
 	public class CoreModule:IModule {
 		private const string NumberPattern = @"^\d*\.?\d+";
-		private const string LeftBracket = "(";
-		private const string RightBracket = ")";
+		public const string LeftBracket = "(";
+		public const string RightBracket = ")";
 
 		public CoreModule () {
 			
