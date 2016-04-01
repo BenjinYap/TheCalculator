@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using TinyCalc.Models;
 namespace TinyCalc {
 	public class UnitTest2 {
@@ -75,35 +76,44 @@ namespace TinyCalc {
 			Assert ("1*2+3", 5);
 			Assert ("1+2^3", 9);
 			Assert ("1+2*3", 7);
+
+			TestOperators ();
 		}
 
-		public static void BadAssert (string input, CalcError output) {
+		public static void TestOperators () {
+			Assert ("1", 1);
+			Assert ("-1", -1);
+			Assert ("--1", 1);
+			Assert ("---1", -1);
+		}
+
+		public static void BadAssert (string input, CalcError output, [CallerLineNumber] int line = 0) {
 			CalcResult result = new Calc ().Solve (input);
 
 			if (result.Error != output) {
-				Debug.WriteLine (input + " = " + output.ToString () + ", GOT " + result.Error.ToString ());
+				Debug.WriteLine ("Line " + line + ": " + input + " = " + output.ToString () + ", GOT " + result.Error.ToString ());
 			}
 		}
 
-		public static void BadAssert (string input, CalcError output, string errorObject) {
+		public static void BadAssert (string input, CalcError output, string errorObject, [CallerLineNumber] int line = 0) {
 			CalcResult result = new Calc ().Solve (input);
 
 			if (result.Error != output) {
-				Debug.WriteLine (input + " = " + output.ToString () + ", GOT " + result.Error.ToString ());
+				Debug.WriteLine ("Line " + line + ": " + input + " = " + output.ToString () + ", GOT " + result.Error.ToString ());
 			} else if (result.ErrorObject != errorObject) {
-				Debug.WriteLine (input + " = " + output.ToString () + " and " + errorObject + ", GOT " + result.Error.ToString () + " and " + result.ErrorObject);
+				Debug.WriteLine ("Line " + line + ": " + input + " = " + output.ToString () + " and " + errorObject + ", GOT " + result.Error.ToString () + " and " + result.ErrorObject);
 			}
 		}
 
-		public static void Assert (string input, double output) {
+		public static void Assert (string input, double output, [CallerLineNumber] int line = 0) {
 			CalcResult result = new Calc ().Solve (input);
 			
 			if (Math.Abs (result.Result - output) <= Math.Abs (result.Result * 0.00001)) {
 				
 			} else if (result.Error != CalcError.None) {
-				Debug.WriteLine (input + " = " + output + ", GOT " + result.Error);
+				Debug.WriteLine ("Line " + line + ": " + input + " = " + output + ", GOT " + result.Error);
 			} else {
-				Debug.WriteLine (input + " = " + output + ", GOT " + result.Result);
+				Debug.WriteLine ("Line " + line + ": " + input + " = " + output + ", GOT " + result.Result);
 			}
 		}
 
