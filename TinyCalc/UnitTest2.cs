@@ -76,15 +76,6 @@ namespace TinyCalc {
 			Assert ("1*2+3", 5);
 			Assert ("1+2^3", 9);
 			Assert ("1+2*3", 7);
-
-			TestOperators ();
-		}
-
-		public static void TestOperators () {
-			Assert ("1", 1);
-			Assert ("-1", -1);
-			Assert ("--1", 1);
-			Assert ("---1", -1);
 		}
 
 		public static void BadAssert (string input, CalcError output, [CallerLineNumber] int line = 0) {
