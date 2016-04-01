@@ -6,9 +6,10 @@ using TinyCalc.Models;
 namespace TinyCalc {
 	public class UnitTest2 {
 		public static void Main (string [] args) {
-			BadAssert ("sinawd(0)", CalcError.UnknownToken);
-			BadAssert ("sinhh(0)", CalcError.UnknownToken);
-			BadAssert ("asinh(0)", CalcError.UnknownToken);
+			//do better unit testing
+			BadAssert ("sinawd(0)", CalcError.UnknownToken, "sinawd(0)");
+			BadAssert ("sinhh(0)", CalcError.UnknownToken, "sinhh(0)");
+			BadAssert ("asinh(0)", CalcError.UnknownToken, "asinh(0)");
 
 			BadAssert ("abs1", CalcError.MissingFunctionBrackets);
 			BadAssert ("sin(1", CalcError.MissingRightBracket);
