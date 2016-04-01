@@ -7,7 +7,6 @@ using TinyCalc.Models;
 namespace TinyCalc {
 	public class UnitTest2 {
 		public static void Main (string [] args) {
-			//do better unit testing
 			BadAssert ("sinawd(0)", CalcError.UnknownToken, "sinawd(0)");
 			BadAssert ("sinhh(0)", CalcError.UnknownToken, "sinhh(0)");
 			BadAssert ("asinh(0)", CalcError.UnknownToken, "asinh(0)");
