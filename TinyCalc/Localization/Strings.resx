@@ -123,16 +123,25 @@
   <data name="Equation" xml:space="preserve">
     <value>Equation</value>
   </data>
-  <data name="MissingCloseBracket" xml:space="preserve">
-    <value>Missing )</value>
+  <data name="InfiniteLoop" xml:space="preserve">
+    <value>Infinite loop occurred</value>
   </data>
-  <data name="MissingOpenBracket" xml:space="preserve">
+  <data name="MissingFunctionBracket" xml:space="preserve">
+    <value>Missing function brackets</value>
+  </data>
+  <data name="MissingLeftBracket" xml:space="preserve">
     <value>Missing (</value>
+  </data>
+  <data name="MissingRightBracket" xml:space="preserve">
+    <value>Missing )</value>
   </data>
   <data name="SyntaxError" xml:space="preserve">
     <value>Syntax error</value>
   </data>
-  <data name="UnknownOperator" xml:space="preserve">
-    <value>Unknown operator</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="UnknownToken" xml:space="preserve">
+    <value>Unknown token</value>
   </data>
 </root>

@@ -49,6 +49,8 @@ namespace TinyCalc.Views {
 
 		public int HistoryIndex { get; set; }
 
+		private Calc calc = new Calc ();
+
 		public MainWindow () {
 			this.History = new History (); 
 			this.HistoryIndex = -1;
@@ -75,10 +77,10 @@ namespace TinyCalc.Views {
 				}
 
 				//calcumalate the result
-				CalcumalateResult result = Calcumalator.Calcumalate (this.TxtInput.Text);
+				CalcResult result = this.calc.Solve (this.TxtInput.Text);
 
 				//if no error
-				if (result.Error == CalcumalateError.None) {
+				if (result.Error == CalcError.None) {
 					//make the list visible for the first time
 					if (this.History.Count <= 0) {
 						this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
@@ -90,11 +92,13 @@ namespace TinyCalc.Views {
 					//remove error
 					this.Error = "";
 				} else {  //if error
-					Dictionary <CalcumalateError, string> errors = new Dictionary <CalcumalateError, string> ();
-					errors [CalcumalateError.MissingOpenBracket] = Strings.MissingOpenBracket;
-					errors [CalcumalateError.MissingCloseBracket] = Strings.MissingCloseBracket;
-					errors [CalcumalateError.UnknownOperator] = Strings.UnknownOperator;
-					errors [CalcumalateError.SyntaxError] = Strings.SyntaxError;
+					Dictionary <CalcError, string> errors = new Dictionary <CalcError, string> ();
+					errors [CalcError.MissingLeftBracket] = Strings.MissingLeftBracket;
+					errors [CalcError.MissingRightBracket] = Strings.MissingRightBracket;
+					errors [CalcError.MissingFunctionBrackets] = Strings.MissingFunctionBracket;
+					errors [CalcError.InfiniteLoop] = Strings.InfiniteLoop;
+					errors [CalcError.UnknownToken] = Strings.UnknownToken;
+					errors [CalcError.Unknown] = Strings.Unknown;
 					this.Error = errors [result.Error];
 				}
 
@@ -108,7 +112,7 @@ namespace TinyCalc.Views {
 				this.SelectHistoryItem ();
 
 				//if there was error
-				if (result.Error != CalcumalateError.None) {
+				if (result.Error != CalcError.None) {
 					//set the textbox to be the original input and highlight it
 					this.TxtInput.Text = input;
 					this.TxtInput.SelectAll ();

@@ -48,7 +48,7 @@ namespace TinyCalc.Models {
 		}
 
 		private CalcResult ActualSolve (string postfix) {
-			List <string> tokens = new List <string> (postfix.Split (' '));
+			List <string> tokens = new List <string> (postfix.Split (new char [] {' '}, StringSplitOptions.RemoveEmptyEntries));
 			
 			//replace all constants with actual values
 			this.constant.SolveConstants (tokens);

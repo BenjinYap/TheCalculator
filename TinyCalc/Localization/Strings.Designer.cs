@@ -79,20 +79,38 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing ).
+        ///   Looks up a localized string similar to Infinite loop occurred.
         /// </summary>
-        public static string MissingCloseBracket {
+        public static string InfiniteLoop {
             get {
-                return ResourceManager.GetString("MissingCloseBracket", resourceCulture);
+                return ResourceManager.GetString("InfiniteLoop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing function brackets.
+        /// </summary>
+        public static string MissingFunctionBracket {
+            get {
+                return ResourceManager.GetString("MissingFunctionBracket", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Missing (.
         /// </summary>
-        public static string MissingOpenBracket {
+        public static string MissingLeftBracket {
             get {
-                return ResourceManager.GetString("MissingOpenBracket", resourceCulture);
+                return ResourceManager.GetString("MissingLeftBracket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing ).
+        /// </summary>
+        public static string MissingRightBracket {
+            get {
+                return ResourceManager.GetString("MissingRightBracket", resourceCulture);
             }
         }
         
@@ -106,11 +124,20 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unknown operator.
+        ///   Looks up a localized string similar to Unknown.
         /// </summary>
-        public static string UnknownOperator {
+        public static string Unknown {
             get {
-                return ResourceManager.GetString("UnknownOperator", resourceCulture);
+                return ResourceManager.GetString("Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown token.
+        /// </summary>
+        public static string UnknownToken {
+            get {
+                return ResourceManager.GetString("UnknownToken", resourceCulture);
             }
         }
     }
