@@ -57,11 +57,14 @@ namespace TinyCalc.Models.Modules {
 		}
 
 		public bool IsNumber (string input) {
-			return Regex.IsMatch (input, CoreModule.NumberPattern + "$");
+			double woot;
+			return double.TryParse (input, out woot);
+			//return Regex.IsMatch (input, CoreModule.NumberPattern + "$");
 		}
 
 		public bool IsNumberWithNegative (string input) {
-			return Regex.IsMatch (input, "^-?" + CoreModule.NumberPattern.Substring (1) + "$");
+			return this.IsNumber (input);
+			//return Regex.IsMatch (input, "^-?" + CoreModule.NumberPattern.Substring (1) + "$");
 		}
 		
 		public bool IsLeftBracket (string input) {

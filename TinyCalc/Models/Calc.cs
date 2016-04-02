@@ -15,12 +15,16 @@ namespace TinyCalc.Models {
 
 		private readonly List <IModule> modules = new List <IModule> ();
 
+		public int Precision { get; set; }
+
 		public Calc () {
 			//create the modules
 			this.modules.Add (core);
 			this.modules.Add (operatorr);
 			this.modules.Add (constant);
 			this.modules.Add (function);
+
+			this.Precision = 9;
 		}
 
 		public CalcResult Solve (string input) {
@@ -34,8 +38,9 @@ namespace TinyCalc.Models {
 			//return new CalcResult (1);
 
 			CalcResult result = this.ActualSolve (parseResult.Output);
-
+			
 			if (result.Error == CalcError.None) {
+				result = new CalcResult (this.Round (result.Result));
 				this.constant.PreviousAnswer = result.Result;
 			}
 
@@ -64,11 +69,6 @@ namespace TinyCalc.Models {
 					//parse the number, it is the final answer
 					return new CalcResult (this.core.Solve (tokens [0]));
 				} else {
-					//if (tokens.Count == 0 && this.operatorr.IsNegation (tokens [0][0].ToString ()) && this.core.IsNumber (tokens [0].Substring (1))) {
-					//	//parse the number, it is the final answer
-					//	return new CalcResult (this.core.Solve (tokens [0]));
-					//}
-
 					//if the token is negation
 					if (this.operatorr.IsNegation (tokens [nonNumberIndex])) {
 						//solve it, remove the tokens from list, insert output in place
@@ -206,6 +206,10 @@ namespace TinyCalc.Models {
 			}
 			
 			return input.Substring (0, pos) + "" + input.Substring (pos + token.Length);
+		}
+
+		private double Round (double num) {
+			return Math.Round (num, this.Precision);
 		}
 	}
 

@@ -37,6 +37,9 @@ namespace TinyCalc {
 			Assert ("abs(-1)", 1);
 			Assert ("abs(1)", 1);
 			Assert ("abs(-1+abs(-1))", 0);
+			Assert ("sin(pi/2)", 1);
+			Assert ("sin(pi)", 0);
+			Assert ("sin(2*pi)", 0);
 			
 			Assert ("pi", Math.PI);
 			Assert ("π", Math.PI);
