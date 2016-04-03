@@ -33,6 +33,10 @@ namespace TinyCalc.Models.Modules {
 			};
 		}
 
+		public List <string> GetTokens () {
+			return new List <string> (this.tokens);
+		}
+
 		public CalcResult VerifyBrackets (string input) {
 			MatchCollection matches = Regex.Matches (input, "(" + string.Join ("|", this.tokens) + @")([^a-zA-Z]|$)");
 			

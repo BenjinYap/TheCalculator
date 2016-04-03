@@ -84,6 +84,28 @@
                  >
         </TextBox>
         
+        <Popup x:Name="AutocompletePopup"
+               IsOpen="True"
+               PlacementTarget="{Binding ElementName=TxtInput}">
+            <ListBox x:Name="AutoompleteList"
+                     Grid.IsSharedSizeScope="True"
+                     ItemsSource="{Binding AutocompleteItems}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="a"></ColumnDefinition>
+                                <ColumnDefinition SharedSizeGroup="b"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                            <TextBlock Text="{Binding Description}" Grid.Column="1"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Popup>
+
         <TextBox x:Name="TxtInput"
                  BorderThickness="0 1 0 1"
                  TextChanged="InputTextChanged"

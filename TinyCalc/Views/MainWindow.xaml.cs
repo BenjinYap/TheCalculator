@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -17,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TinyCalc.Localization;
 using TinyCalc.Models;
+using TinyCalc.Models.Modules;
 using TinyCalc.ViewModels;
 
 namespace TinyCalc.Views {
@@ -37,6 +39,7 @@ namespace TinyCalc.Views {
 		#endregion
 
 		public History History { get; set; }
+		public int HistoryIndex { get; set; }
 
 		private string error;
 		public string Error {
@@ -47,77 +50,117 @@ namespace TinyCalc.Views {
 			}
 		}
 
-		public int HistoryIndex { get; set; }
+		private List <AutocompleteItem> fullAutocompleteItems = new List <AutocompleteItem> ();
+
+		public ObservableCollection <AutocompleteItem> AutocompleteItems { get; set; }
+		public int AutocompleteItemIndex { get; set; }
 
 		private Calc calc = new Calc ();
 
 		public MainWindow () {
 			this.History = new History (); 
 			this.HistoryIndex = -1;
+
+			this.AutocompleteItems = new ObservableCollection <AutocompleteItem> ();
+			this.AutocompleteItemIndex = -1;
 			
+			List <string> tokens = new FunctionModule ().GetTokens ();
+
+			foreach (string token in tokens) {
+				this.fullAutocompleteItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, token));
+			}
+
 			InitializeComponent ();
-			
-			//this.History.Add (new HistoryItem ("awdggawd", 123));
-			//this.History.Add (new HistoryItem ("awdagwd", 123));
-			//this.History.Add (new HistoryItem ("aggjwdawd", 123));
-			//this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
+
+			this.History.Add (new HistoryItem ("awdggawd", 123));
+			this.History.Add (new HistoryItem ("awdagwd", 123));
+			this.History.Add (new HistoryItem ("aggjwdawd", 123));
+			this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		private void InputTextChanged (object sender, RoutedEventArgs e) {
 			this.TxtPlaceholder.Visibility = this.TxtInput.Text.Length <= 0 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
 			this.TxtInput.Opacity = this.TxtInput.Text.Length <= 0 ? 0.5 : 1;
+
+			this.AutocompleteItems.Clear ();
+			this.AutoompleteList.SelectedIndex = -1;
+			this.AutocompleteItemIndex = -1;
+
+			if (this.TxtInput.Text.Length > 0) {
+				for (int i = 0; i < this.fullAutocompleteItems.Count; i++) {
+					AutocompleteItem item = this.fullAutocompleteItems [i];
+
+					if (item.Name.Contains (this.TxtInput.Text)) {
+						this.AutocompleteItems.Add (item);
+					}
+				}
+
+				for (int i = 0; i < this.AutocompleteItems.Count; i++) {
+					if (this.AutocompleteItems [i].Name.IndexOf (this.TxtInput.Text) == 0 && this.AutocompleteItemIndex == -1) {
+						this.AutoompleteList.SelectedIndex = i;
+					}
+				}
+			}
 		}
 
-		private void InputKeyUpped (object sender, KeyEventArgs e) {
-			if (e.Key == Key.Enter) {
-				//if input is empty, remove error and do nothing
-				if (string.IsNullOrWhiteSpace (this.TxtInput.Text)) {
-					this.Error = "";
-					return;
+		private void HandleEnter () {
+			//if input is empty, remove error and do nothing
+			if (string.IsNullOrWhiteSpace (this.TxtInput.Text)) {
+				this.Error = "";
+				return;
+			}
+
+			//calcumalate the result
+			CalcResult result = this.calc.Solve (this.TxtInput.Text);
+
+			//if no error
+			if (result.Error == CalcError.None) {
+				//make the list visible for the first time
+				if (this.History.Count <= 0) {
+					this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 				}
 
-				//calcumalate the result
-				CalcResult result = this.calc.Solve (this.TxtInput.Text);
+				//add to the history
+				this.History.Add (new HistoryItem (this.TxtInput.Text, result.Result));
 
-				//if no error
-				if (result.Error == CalcError.None) {
-					//make the list visible for the first time
-					if (this.History.Count <= 0) {
-						this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
-					}
+				//remove error
+				this.Error = "";
+			} else {  //if error
+				Dictionary <CalcError, string> errors = new Dictionary <CalcError, string> ();
+				errors [CalcError.MissingLeftBracket] = Strings.MissingLeftBracket;
+				errors [CalcError.MissingRightBracket] = Strings.MissingRightBracket;
+				errors [CalcError.MissingFunctionBrackets] = Strings.MissingFunctionBracket;
+				errors [CalcError.InfiniteLoop] = Strings.InfiniteLoop;
+				errors [CalcError.UnknownToken] = Strings.UnknownToken;
+				errors [CalcError.Unknown] = Strings.Unknown;
+				this.Error = errors [result.Error];
+			}
 
-					//add to the history
-					this.History.Add (new HistoryItem (this.TxtInput.Text, result.Result));
+			//get the input incase of error
+			string input = this.TxtInput.Text;
 
-					//remove error
-					this.Error = "";
-				} else {  //if error
-					Dictionary <CalcError, string> errors = new Dictionary <CalcError, string> ();
-					errors [CalcError.MissingLeftBracket] = Strings.MissingLeftBracket;
-					errors [CalcError.MissingRightBracket] = Strings.MissingRightBracket;
-					errors [CalcError.MissingFunctionBrackets] = Strings.MissingFunctionBracket;
-					errors [CalcError.InfiniteLoop] = Strings.InfiniteLoop;
-					errors [CalcError.UnknownToken] = Strings.UnknownToken;
-					errors [CalcError.Unknown] = Strings.Unknown;
-					this.Error = errors [result.Error];
+			//reset the history index
+			this.HistoryIndex = -1;
+
+			//reset the gui highlight
+			this.SelectHistoryItem ();
+
+			//if there was error
+			if (result.Error != CalcError.None) {
+				//set the textbox to be the original input and highlight it
+				this.TxtInput.Text = input;
+				this.TxtInput.SelectAll ();
+			}
+		}
+
+		private void HandleUp () {
+			//if there's something in autocomplete
+			if (this.AutocompleteItems.Count > 0) {
+				//move the autocomplete index
+				if (this.AutoompleteList.SelectedIndex > 0) {
+					this.AutoompleteList.SelectedIndex--;
 				}
-
-				//get the input incase of error
-				string input = this.TxtInput.Text;
-
-				//reset the history index
-				this.HistoryIndex = -1;
-
-				//reset the gui highlight
-				this.SelectHistoryItem ();
-
-				//if there was error
-				if (result.Error != CalcError.None) {
-					//set the textbox to be the original input and highlight it
-					this.TxtInput.Text = input;
-					this.TxtInput.SelectAll ();
-				}
-			} else if (e.Key == Key.Up) {
+			} else {  //nothing in autocomplete
 				//if index has not moved
 				if (this.HistoryIndex <= -1) {
 					//set index to bottom
@@ -126,7 +169,19 @@ namespace TinyCalc.Views {
 					//move index up one
 					this.HistoryIndex--;
 				}
-			} else if (e.Key == Key.Down) {
+
+				this.SelectHistoryItem ();
+			}
+		}
+
+		private void HandleDown () {
+			//if there's something in autocomplete
+			if (this.AutocompleteItems.Count > 0) {
+				//move the autocomplete index
+				if (this.AutoompleteList.SelectedIndex < this.AutocompleteItems.Count) {
+					this.AutoompleteList.SelectedIndex++;
+				}
+			} else {  //nothing in autocomplete
 				//move index down only if the index has been moved and isn't at the bottom
 				if (this.HistoryIndex > -1 && this.HistoryIndex < this.History.Count) {
 					this.HistoryIndex++;
@@ -136,15 +191,22 @@ namespace TinyCalc.Views {
 						//reset the index
 						this.HistoryIndex = -1;
 					}
+
+					this.SelectHistoryItem ();
 				}
+			}
+		}
+
+		private void InputKeyUpped (object sender, KeyEventArgs e) {
+			if (e.Key == Key.Enter) {
+				this.HandleEnter ();
+			} else if (e.Key == Key.Up) {
+				this.HandleUp ();
+			} else if (e.Key == Key.Down) {
+				this.HandleDown ();
 			} else if (Keyboard.IsKeyDown (Key.LeftCtrl) || Keyboard.IsKeyDown (Key.RightCtrl) && e.Key == Key.Q) {
 				//quit on ctrl Q
 				Application.Current.Shutdown ();
-			}
-
-			//update gui based on selected history item
-			if (e.Key == Key.Up || e.Key == Key.Down) {
-				this.SelectHistoryItem ();
 			}
 		}
 

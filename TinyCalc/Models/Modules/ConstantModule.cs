@@ -21,6 +21,10 @@ namespace TinyCalc.Models.Modules {
 			};
 		}
 
+		public List <string> GetTokens () {
+			return new List <string> (this.tokens);
+		}
+
 		public string GetNextToken (string input) {
 			Match match = Regex.Match (input, "^(" + string.Join ("|", this.tokens) + @")(?=[^a-zA-Z]|$)");
 
