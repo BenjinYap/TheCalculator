@@ -1,0 +1,2 @@
+# TinyCalc
+TinyCalc is a replacement for the default Windows calculator. It's meant to be used exclusively with the keyboard because clicking on a virtual calculator is very slow. Unlike the Windows calculator, you can type in the entire equation before you evaluate it. All the common functions and constants are supported. A history of all previous calculations in that session are also stored. The arrow keys can be used to select previous calculations.
