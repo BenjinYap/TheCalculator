@@ -135,8 +135,8 @@
                                 <ColumnDefinition SharedSizeGroup="c"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             
-                            <TextBlock Text="{Binding Name}" Margin="10 0 0 0"></TextBlock>
-                            <TextBlock Text="{Binding Type}" Grid.Column="1" Margin="10 0"></TextBlock>
+                            <TextBlock Text="{Binding Name}" Margin="10 0 0 0" FontWeight="Bold"></TextBlock>
+                            <TextBlock Text="{Binding Type}" Grid.Column="1" Margin="10 0" FontStyle="Italic"></TextBlock>
                             <TextBlock Text="{Binding Description}" Grid.Column="2" Margin="0 0 10 0"></TextBlock>
                         </Grid>
                     </DataTemplate>
