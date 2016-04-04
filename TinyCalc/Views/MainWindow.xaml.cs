@@ -51,11 +51,8 @@ namespace TinyCalc.Views {
 			}
 		}
 
-		private List <AutocompleteItem> fullAutocompleteItems = new List <AutocompleteItem> ();
-
-		public ObservableCollection <AutocompleteItem> AutocompleteItems { get; set; }
-		public int AutocompleteItemIndex { get; set; }
-
+		public AutocompleteList AutocompleteList { get; set; }
+		
 		private Calc calc = new Calc ();
 
 		private Regex autocompleteTokenRegex = new Regex ("[a-zA-Z]+$");
@@ -64,15 +61,8 @@ namespace TinyCalc.Views {
 			this.History = new History (); 
 			this.HistoryIndex = -1;
 
-			this.AutocompleteItems = new ObservableCollection <AutocompleteItem> ();
-			this.AutocompleteItemIndex = -1;
+			this.AutocompleteList = new AutocompleteList ();
 			
-			List <string> tokens = new FunctionModule ().GetTokens ();
-
-			foreach (string token in tokens) {
-				this.fullAutocompleteItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, token));
-			}
-
 			InitializeComponent ();
 
 			this.History.Add (new HistoryItem ("awdggawd", 123));
@@ -82,63 +72,38 @@ namespace TinyCalc.Views {
 		}
 
 		private void InputSelectionChanged (object sender, RoutedEventArgs e) {
-			//reset autocomplete list
-			this.AutocompleteItems.Clear ();
-			this.AutoompleteList.SelectedIndex = -1;
-			this.AutocompleteItemIndex = -1;
-			
-			if (this.TxtInput.Text.Length > 0) {
-				//grab the input from the start until the caret position
-				string source = this.TxtInput.Text.Substring (0, this.TxtInput.CaretIndex);
-
-				//grab the last substring that resembles a token
-				Match match = this.autocompleteTokenRegex.Match (source);
-				
-				if (match.Success) {
-					string token = match.Value;
-
-					//populate autocomplete list with items that contain the token
-					for (int i = 0; i < this.fullAutocompleteItems.Count; i++) {
-						AutocompleteItem item = this.fullAutocompleteItems [i];
-
-						if (item.Name.Contains (token)) {
-							this.AutocompleteItems.Add (item);
-						}
-					}
-
-					//set selected item to the first item that matches the token from the start of the string
-					for (int i = 0; i < this.AutocompleteItems.Count; i++) {
-						if (this.AutocompleteItems [i].Name.IndexOf (token) == 0 && this.AutoompleteList.SelectedIndex == -1) {
-							this.AutoompleteList.SelectedIndex = i;
-						}
-					}
-				}
-			}
+			this.AutocompleteList.Populate (this.GetAutocompleteCandidate ());
 		}
 
 		private void InputTextChanged (object sender, RoutedEventArgs e) {
 			//determine "Equation" placeholder visibility
 			this.TxtPlaceholder.Visibility = this.TxtInput.Text.Length <= 0 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
 			this.TxtInput.Opacity = this.TxtInput.Text.Length <= 0 ? 0.5 : 1;
+		}
 
-			
+		private string GetAutocompleteCandidate () {
+			if (string.IsNullOrWhiteSpace (this.TxtInput.Text)) {
+				return "";
+			}
+
+			//grab the input from the start until the caret position
+			string source = this.TxtInput.Text.Substring (0, this.TxtInput.CaretIndex);
+
+			//grab the last substring that resembles a token
+			Match match = Regex.Match  (source, "[a-zA-Z]+$");
+				
+			if (match.Success) {
+				return match.Value;
+			}
+
+			return "";
 		}
 
 		private void HandleEnter () {
-			if (this.AutocompleteItems.Count > 0) {
-				//grab the input from the start until the caret position
-				string source = this.TxtInput.Text.Substring (0, this.TxtInput.CaretIndex);
-
-				//grab the last substring that resembles a token
-				Match match = this.autocompleteTokenRegex.Match (source);
-				
-				if (match.Success) {
-					string token = match.Value;
-					Regex regex = new Regex (token);
-					AutocompleteItem item = (AutocompleteItem) this.AutoompleteList.SelectedItem;
-					this.TxtInput.Text = regex.Replace (this.TxtInput.Text, item.Name, 1);
-				}
-
+			if (this.AutocompleteList.IsPopulated) {
+				string token = this.GetAutocompleteCandidate ();
+				Regex regex = new Regex (token);
+				this.TxtInput.Text = regex.Replace (this.TxtInput.Text, this.AutocompleteList.SelectedItemName, 1);
 				return;
 			}
 
@@ -193,10 +158,10 @@ namespace TinyCalc.Views {
 
 		private void HandleUp () {
 			//if there's something in autocomplete
-			if (this.AutocompleteItems.Count > 0) {
+			if (this.AutocompleteList.Count > 0) {
 				//move the autocomplete index
-				if (this.AutoompleteList.SelectedIndex > 0) {
-					this.AutoompleteList.SelectedIndex--;
+				if (this.AutocompleteList.SelectedIndex > 0) {
+					this.AutocompleteList.SelectedIndex--;
 				}
 			} else {  //nothing in autocomplete
 				//if index has not moved
@@ -214,10 +179,10 @@ namespace TinyCalc.Views {
 
 		private void HandleDown () {
 			//if there's something in autocomplete
-			if (this.AutocompleteItems.Count > 0) {
+			if (this.AutocompleteList.Count > 0) {
 				//move the autocomplete index
-				if (this.AutoompleteList.SelectedIndex < this.AutocompleteItems.Count) {
-					this.AutoompleteList.SelectedIndex++;
+				if (this.AutocompleteList.SelectedIndex < this.AutocompleteList.Count - 1) {
+					this.AutocompleteList.SelectedIndex++;
 				}
 			} else {  //nothing in autocomplete
 				//move index down only if the index has been moved and isn't at the bottom

@@ -79,6 +79,7 @@
     <Compile Include="UnitTest2.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="ViewModels\AutocompleteItem.cs" />
+    <Compile Include="ViewModels\AutocompleteList.cs" />
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\HistoryItem.cs" />
     <Compile Include="Views\Converters.cs" />

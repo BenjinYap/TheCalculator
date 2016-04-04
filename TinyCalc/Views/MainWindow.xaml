@@ -87,9 +87,10 @@
         <Popup x:Name="AutocompletePopup"
                IsOpen="True"
                PlacementTarget="{Binding ElementName=TxtInput}">
-            <ListBox x:Name="AutoompleteList"
+            <ListBox x:Name="AutocompleteListBox"
                      Grid.IsSharedSizeScope="True"
-                     ItemsSource="{Binding AutocompleteItems}">
+                     ItemsSource="{Binding AutocompleteList}"
+                     SelectedIndex="{Binding AutocompleteList.SelectedIndex}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
