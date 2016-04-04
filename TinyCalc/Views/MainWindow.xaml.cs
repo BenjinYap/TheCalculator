@@ -237,6 +237,10 @@ namespace TinyCalc.Views {
 			} else if (e.Key == Key.Down) {
 				e.Handled = true;
 				this.HandleDown ();
+			} else if (e.Key == Key.Space && this.IsCtrlDown () == false) {
+				if (this.TxtInput.CaretIndex <= 0) {
+					e.Handled = true;
+				}
 			}
 		}
 
