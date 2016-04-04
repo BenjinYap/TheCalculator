@@ -226,6 +226,11 @@ namespace TinyCalc.Views {
 				//activate autocomplete at cursor
 				e.Handled = true;
 				this.AutocompleteList.Populate (this.GetAutocompleteCandidate ());
+
+				//if nothing was found, show the master list
+				if (this.AutocompleteList.IsPopulated == false) {
+					this.AutocompleteList.PopulateAll ();
+				}
 			} else if (e.Key == Key.Q && this.IsCtrlDown ()) {
 				//quit on ctrl Q
 				Application.Current.Shutdown ();

@@ -61,9 +61,21 @@ namespace TinyCalc.ViewModels {
 			this.SelectedIndex = -1;
 		}
 
+		public void PopulateAll () {
+			//show the master list
+			this.Reset ();
+
+			foreach (AutocompleteItem item in this.allItems) {
+				this.Add (item);
+			}
+
+			this.SelectedIndex = 0;
+		}
+
 		public void Populate (string token) {
 			this.Reset ();
 
+			//if token is empty, show the master list
 			if (string.IsNullOrWhiteSpace (token)) {
 				return;
 			}
