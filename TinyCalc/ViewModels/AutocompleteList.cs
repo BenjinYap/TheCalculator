@@ -95,7 +95,7 @@ namespace TinyCalc.ViewModels {
 			for (int i = 0; i < this.allItems.Count; i++) {
 				AutocompleteItem item = this.allItems [i];
 
-				if (item.Name.Contains (token)) {
+				if (item.Name.IndexOf (token) == 0) {
 					this.Add (item);
 				}
 			}
