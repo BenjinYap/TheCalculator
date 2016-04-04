@@ -207,17 +207,33 @@ namespace TinyCalc.Views {
 			}
 		}
 
-		private void InputKeyUpped (object sender, KeyEventArgs e) {
-			if (e.Key == Key.Enter) {
-				this.HandleEnter ();
-			} else if (e.Key == Key.Up) {
+		private void InputPreviewKeyDowned (object sender, KeyEventArgs e) {
+			if (e.Key == Key.Up) {
 				this.HandleUp ();
 			} else if (e.Key == Key.Down) {
 				this.HandleDown ();
-			} else if (e.Key == Key.Q && Keyboard.IsKeyDown (Key.LeftCtrl) || Keyboard.IsKeyDown (Key.RightCtrl)) {
+			}
+		}
+
+		private void InputKeyDowned (object sender, KeyEventArgs e) {
+			if (e.Key == Key.Enter) {
+				//solve the equation
+				this.HandleEnter ();
+			} else if (e.Key == Key.Escape) {
+				//cancel the autocomplete
+				this.AutocompleteList.Reset ();
+			} else if (e.Key == Key.Space && this.IsCtrlDown ()) {
+				//activate autocomplete at cursor
+				e.Handled = true;
+				this.AutocompleteList.Populate (this.GetAutocompleteCandidate ());
+			} else if (e.Key == Key.Q && this.IsCtrlDown ()) {
 				//quit on ctrl Q
 				Application.Current.Shutdown ();
 			}
+		}
+
+		private bool IsCtrlDown () {
+			return Keyboard.IsKeyDown (Key.LeftCtrl) || Keyboard.IsKeyDown (Key.RightCtrl);
 		}
 
 		private void SelectHistoryItem () {
