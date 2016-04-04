@@ -121,7 +121,7 @@
     <value>by Benjin Yap, on GitHub</value>
   </data>
   <data name="Equation" xml:space="preserve">
-    <value>Equation (Ctrl+Space for autocomplete)</value>
+    <value>Ctrl+Space for autocomplete, Ctrl+Q to quit</value>
   </data>
   <data name="InfiniteLoop" xml:space="preserve">
     <value>Infinite loop occurred</value>
