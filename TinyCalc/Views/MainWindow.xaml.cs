@@ -55,7 +55,7 @@ namespace TinyCalc.Views {
 		
 		private Calc calc = new Calc ();
 
-		private Regex autocompleteTokenRegex = new Regex ("[a-zA-Z]+$");
+		private int previousInputLength = 0;
 
 		public MainWindow () {
 			this.History = new History (); 
@@ -72,8 +72,14 @@ namespace TinyCalc.Views {
 		}
 
 		private void InputSelectionChanged (object sender, RoutedEventArgs e) {
-			this.AutocompleteList.Populate (this.GetAutocompleteCandidate ());
-			////////change so that autocomplete only appears when typing
+			//perform autocomplete only if 1 new character was entered or input was shortened by deleting
+			if (this.TxtInput.Text.Length - this.previousInputLength == 1 || this.TxtInput.Text.Length < this.previousInputLength) {
+				this.AutocompleteList.Populate (this.GetAutocompleteCandidate ());
+			} else {  //clear autocomplete in all other cases
+				this.AutocompleteList.Reset ();
+			}
+			
+			this.previousInputLength = this.TxtInput.Text.Length;
 		}
 
 		private void InputTextChanged (object sender, RoutedEventArgs e) {

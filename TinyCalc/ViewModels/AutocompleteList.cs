@@ -35,7 +35,7 @@ namespace TinyCalc.ViewModels {
 			}
 		}
 
-		private void Reset () {
+		public void Reset () {
 			this.Clear ();
 			this.SelectedIndex = -1;
 		}
