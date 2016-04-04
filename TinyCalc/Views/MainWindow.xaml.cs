@@ -247,5 +247,10 @@ namespace TinyCalc.Views {
 			//highlight all text
 			this.TxtInput.SelectAll ();
 		}
+
+		private void WindowLocationChanged (object sender, EventArgs e) {
+			this.AutocompletePopup.HorizontalOffset++;
+			this.AutocompletePopup.HorizontalOffset--;
+		}
 	}
 }

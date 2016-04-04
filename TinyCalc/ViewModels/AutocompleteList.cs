@@ -35,6 +35,12 @@ namespace TinyCalc.ViewModels {
 			}
 		}
 
+		protected override void OnCollectionChanged (System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+			base.OnCollectionChanged (e);
+			
+			this.OnPropertyChanged (new PropertyChangedEventArgs ("IsPopulated"));
+		}
+
 		public void Reset () {
 			this.Clear ();
 			this.SelectedIndex = -1;
