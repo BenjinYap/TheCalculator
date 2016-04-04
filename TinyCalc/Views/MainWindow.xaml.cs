@@ -169,8 +169,9 @@ namespace TinyCalc.Views {
 				this.Error = errors [result.Error];
 			}
 
-			//get the input incase of error
+			//get the input and caret incase of error
 			string input = this.TxtInput.Text;
+			int caretIndex = this.TxtInput.CaretIndex;
 
 			//reset the history index
 			this.HistoryIndex = -1;
@@ -180,8 +181,9 @@ namespace TinyCalc.Views {
 
 			//if there was error
 			if (result.Error != CalcError.None) {
-				//set the textbox to be the original input
+				//set the textbox to be the original input and move caret to original spot
 				this.TxtInput.Text = input;
+				this.TxtInput.CaretIndex = caretIndex;
 			}
 		}
 
