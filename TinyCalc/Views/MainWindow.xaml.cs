@@ -110,7 +110,15 @@ namespace TinyCalc.Views {
 			if (this.AutocompleteList.IsPopulated) {
 				string token = this.GetAutocompleteCandidate ();
 				Regex regex = new Regex (token);
+
+				//calculate the new caret index after replacing
+				int newCaretIndex = this.TxtInput.Text.IndexOf (token) + this.AutocompleteList.SelectedItemName.Length;
+
+				//perform the replacement
 				this.TxtInput.Text = regex.Replace (this.TxtInput.Text, this.AutocompleteList.SelectedItemName, 1);
+
+				//set the caret index to be after the inserted token
+				this.TxtInput.SelectionStart = newCaretIndex;
 				return;
 			}
 
