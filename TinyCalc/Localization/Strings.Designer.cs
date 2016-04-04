@@ -70,7 +70,7 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Equation.
+        ///   Looks up a localized string similar to Equation (Ctrl+Space for autocomplete).
         /// </summary>
         public static string Equation {
             get {

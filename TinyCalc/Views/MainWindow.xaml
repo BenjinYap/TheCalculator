@@ -80,6 +80,7 @@
                  Padding="5 0 5 0"
                  Grid.RowSpan="1"
                  Grid.Row="1"
+                 FontSize="12"
                  Text="{x:Static str:Strings.Equation}"
                  IsTabStop="False"
                  >
@@ -97,11 +98,15 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border x:Name="_Border"
-                                            BorderBrush="Red"
-                                            Background="Orange">
+                                    <Border x:Name="_Border">
                                         <ContentPresenter></ContentPresenter>
                                     </Border>
+                                    
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="_Border" Property="Background" Value="LightGray"></Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -110,13 +115,22 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="FontSize" Value="12"></Setter>
+                                    <Setter Property="FontFamily" Value="consolas"></Setter>
+                                </Style>
+                            </Grid.Resources>
+                            
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition SharedSizeGroup="a"></ColumnDefinition>
                                 <ColumnDefinition SharedSizeGroup="b"></ColumnDefinition>
+                                <ColumnDefinition SharedSizeGroup="c"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                            <TextBlock Text="{Binding Description}" Grid.Column="1"></TextBlock>
+                            <TextBlock Text="{Binding Name}" Margin="10 0 0 0"></TextBlock>
+                            <TextBlock Text="{Binding Type}" Grid.Column="1" Margin="10 0"></TextBlock>
+                            <TextBlock Text="{Binding Description}" Grid.Column="2" Margin="0 0 10 0"></TextBlock>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

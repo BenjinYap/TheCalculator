@@ -42,11 +42,6 @@ namespace TinyCalc.ViewModels {
 			foreach (string token in tokens) {
 				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, Autocomplete.ResourceManager.GetString (token)));
 			}
-
-			this.Add (this.allItems [0]);
-			this.Add (this.allItems [1]);
-			this.Add (this.allItems [2]);
-			return;
 		}
 
 		protected override void OnCollectionChanged (System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {

@@ -64,11 +64,6 @@ namespace TinyCalc.Views {
 			this.AutocompleteList = new AutocompleteList ();
 			
 			InitializeComponent ();
-
-			this.History.Add (new HistoryItem ("awdggawd", 123));
-			this.History.Add (new HistoryItem ("awdagwd", 123));
-			this.History.Add (new HistoryItem ("aggjwdawd", 123));
-			this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		private void InputSelectionChanged (object sender, RoutedEventArgs e) {

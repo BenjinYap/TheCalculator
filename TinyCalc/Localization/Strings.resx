@@ -121,7 +121,7 @@
     <value>TinyCalc</value>
   </data>
   <data name="Equation" xml:space="preserve">
-    <value>Equation</value>
+    <value>Equation (Ctrl+Space for autocomplete)</value>
   </data>
   <data name="InfiniteLoop" xml:space="preserve">
     <value>Infinite loop occurred</value>
