@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -44,6 +45,9 @@ namespace TinyCalc.ViewModels {
 			foreach (string token in tokens) {
 				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, Autocomplete.ResourceManager.GetString (token)));
 			}
+
+			//sort by alpha
+			this.allItems.Sort (new Comparison <AutocompleteItem> ((x, y) => x.Name.CompareTo (y.Name)));
 		}
 
 		protected override void OnCollectionChanged (System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
