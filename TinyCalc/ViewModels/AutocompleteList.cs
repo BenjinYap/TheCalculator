@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TinyCalc.Localization;
 using TinyCalc.Models.Modules;
 namespace TinyCalc.ViewModels {
 	public class AutocompleteList:ObservableCollection <AutocompleteItem> {
@@ -28,16 +29,18 @@ namespace TinyCalc.ViewModels {
 		public AutocompleteList () {
 			this.SelectedIndex = -1;
 
+			//retrieve the tokens from the modules
+			//add them to the master list along with the descriptions of each
 			List <string> tokens = new FunctionModule ().GetTokens ();
 
 			foreach (string token in tokens) {
-				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Function, token, token));
+				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Function, token, Autocomplete.ResourceManager.GetString (token)));
 			}
 
 			tokens = new ConstantModule ().GetTokens ();
 
 			foreach (string token in tokens) {
-				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, token));
+				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, Autocomplete.ResourceManager.GetString (token)));
 			}
 
 			this.Add (this.allItems [0]);
@@ -49,6 +52,7 @@ namespace TinyCalc.ViewModels {
 		protected override void OnCollectionChanged (System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
 			base.OnCollectionChanged (e);
 			
+			//notify this property for the lovely front end
 			this.OnPropertyChanged (new PropertyChangedEventArgs ("IsPopulated"));
 		}
 
