@@ -93,6 +93,7 @@
         
         <Popup x:Name="AutocompletePopup"
                IsOpen="{Binding AutocompleteList.IsPopulated, Mode=OneWay}"
+               StaysOpen="False"
                PlacementTarget="{Binding ElementName=TxtInput}">
             <ListBox x:Name="AutocompleteListBox"
                      Grid.IsSharedSizeScope="True"
