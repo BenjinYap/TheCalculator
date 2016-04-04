@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -57,6 +58,8 @@ namespace TinyCalc.Views {
 
 		private Calc calc = new Calc ();
 
+		private Regex autocompleteTokenRegex = new Regex ("[a-zA-Z]+$");
+
 		public MainWindow () {
 			this.History = new History (); 
 			this.HistoryIndex = -1;
@@ -78,32 +81,67 @@ namespace TinyCalc.Views {
 			this.ScrollViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 
-		private void InputTextChanged (object sender, RoutedEventArgs e) {
-			this.TxtPlaceholder.Visibility = this.TxtInput.Text.Length <= 0 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
-			this.TxtInput.Opacity = this.TxtInput.Text.Length <= 0 ? 0.5 : 1;
-
+		private void InputSelectionChanged (object sender, RoutedEventArgs e) {
+			//reset autocomplete list
 			this.AutocompleteItems.Clear ();
 			this.AutoompleteList.SelectedIndex = -1;
 			this.AutocompleteItemIndex = -1;
-
+			
 			if (this.TxtInput.Text.Length > 0) {
-				for (int i = 0; i < this.fullAutocompleteItems.Count; i++) {
-					AutocompleteItem item = this.fullAutocompleteItems [i];
+				//grab the input from the start until the caret position
+				string source = this.TxtInput.Text.Substring (0, this.TxtInput.CaretIndex);
 
-					if (item.Name.Contains (this.TxtInput.Text)) {
-						this.AutocompleteItems.Add (item);
+				//grab the last substring that resembles a token
+				Match match = this.autocompleteTokenRegex.Match (source);
+				
+				if (match.Success) {
+					string token = match.Value;
+
+					//populate autocomplete list with items that contain the token
+					for (int i = 0; i < this.fullAutocompleteItems.Count; i++) {
+						AutocompleteItem item = this.fullAutocompleteItems [i];
+
+						if (item.Name.Contains (token)) {
+							this.AutocompleteItems.Add (item);
+						}
 					}
-				}
 
-				for (int i = 0; i < this.AutocompleteItems.Count; i++) {
-					if (this.AutocompleteItems [i].Name.IndexOf (this.TxtInput.Text) == 0 && this.AutocompleteItemIndex == -1) {
-						this.AutoompleteList.SelectedIndex = i;
+					//set selected item to the first item that matches the token from the start of the string
+					for (int i = 0; i < this.AutocompleteItems.Count; i++) {
+						if (this.AutocompleteItems [i].Name.IndexOf (token) == 0 && this.AutoompleteList.SelectedIndex == -1) {
+							this.AutoompleteList.SelectedIndex = i;
+						}
 					}
 				}
 			}
 		}
 
+		private void InputTextChanged (object sender, RoutedEventArgs e) {
+			//determine "Equation" placeholder visibility
+			this.TxtPlaceholder.Visibility = this.TxtInput.Text.Length <= 0 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+			this.TxtInput.Opacity = this.TxtInput.Text.Length <= 0 ? 0.5 : 1;
+
+			
+		}
+
 		private void HandleEnter () {
+			if (this.AutocompleteItems.Count > 0) {
+				//grab the input from the start until the caret position
+				string source = this.TxtInput.Text.Substring (0, this.TxtInput.CaretIndex);
+
+				//grab the last substring that resembles a token
+				Match match = this.autocompleteTokenRegex.Match (source);
+				
+				if (match.Success) {
+					string token = match.Value;
+					Regex regex = new Regex (token);
+					AutocompleteItem item = (AutocompleteItem) this.AutoompleteList.SelectedItem;
+					this.TxtInput.Text = regex.Replace (this.TxtInput.Text, item.Name, 1);
+				}
+
+				return;
+			}
+
 			//if input is empty, remove error and do nothing
 			if (string.IsNullOrWhiteSpace (this.TxtInput.Text)) {
 				this.Error = "";

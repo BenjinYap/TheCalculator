@@ -109,6 +109,7 @@
         <TextBox x:Name="TxtInput"
                  BorderThickness="0 1 0 1"
                  TextChanged="InputTextChanged"
+                 SelectionChanged="InputSelectionChanged"
                  KeyUp="InputKeyUpped"
                  HorizontalContentAlignment="Right"
                  VerticalContentAlignment="Center"
