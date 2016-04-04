@@ -17,7 +17,6 @@ namespace TinyCalc.ViewModels {
 			}
 		}
 
-		private string selectedItemName;
 		public string SelectedItemName {
 			get { return this [this.SelectedIndex].Name; }
 		}

@@ -73,6 +73,7 @@ namespace TinyCalc.Views {
 
 		private void InputSelectionChanged (object sender, RoutedEventArgs e) {
 			this.AutocompleteList.Populate (this.GetAutocompleteCandidate ());
+			////////change so that autocomplete only appears when typing
 		}
 
 		private void InputTextChanged (object sender, RoutedEventArgs e) {
@@ -207,7 +208,7 @@ namespace TinyCalc.Views {
 				this.HandleUp ();
 			} else if (e.Key == Key.Down) {
 				this.HandleDown ();
-			} else if (Keyboard.IsKeyDown (Key.LeftCtrl) || Keyboard.IsKeyDown (Key.RightCtrl) && e.Key == Key.Q) {
+			} else if (e.Key == Key.Q && Keyboard.IsKeyDown (Key.LeftCtrl) || Keyboard.IsKeyDown (Key.RightCtrl)) {
 				//quit on ctrl Q
 				Application.Current.Shutdown ();
 			}
