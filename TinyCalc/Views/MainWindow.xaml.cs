@@ -101,11 +101,11 @@ namespace TinyCalc.Views {
 
 			//grab the last substring that resembles a token
 			Match match = Regex.Match  (source, "[a-zA-Z]+$");
-				
+			
 			if (match.Success) {
 				return match.Value;
 			}
-
+			
 			return "";
 		}
 
@@ -262,11 +262,18 @@ namespace TinyCalc.Views {
 			} else if (e.Key == Key.Space && this.IsCtrlDown ()) {
 				//activate autocomplete at cursor
 				e.Handled = true;
-				this.AutocompleteList.Populate (this.GetAutocompleteCandidate ());
 
-				//if nothing was found, show the master list
-				if (this.AutocompleteList.IsPopulated == false) {
-					this.AutocompleteList.PopulateAll ();
+				//only attempt autocomplete is nothing is highlighted
+				if (this.TxtInput.SelectionLength == 0) {
+					//get the candidate
+					string candidate = this.GetAutocompleteCandidate ();
+
+					//if no candidate, show master list
+					if (candidate == "") {
+						this.AutocompleteList.PopulateAll ();
+					} else {  //otherwise show relevant list
+						this.AutocompleteList.Populate (candidate);
+					}
 				}
 			} else if (e.Key == Key.Q && this.IsCtrlDown ()) {
 				//quit on ctrl Q
