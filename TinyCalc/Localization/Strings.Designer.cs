@@ -61,15 +61,6 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TinyCalc.
-        /// </summary>
-        public static string AppName {
-            get {
-                return ResourceManager.GetString("AppName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Equation (Ctrl+Space for autocomplete).
         /// </summary>
         public static string Equation {

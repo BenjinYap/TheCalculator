@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -58,6 +59,10 @@ namespace TinyCalc.Views {
 		private int previousInputLength = 0;
 
 		public MainWindow () {
+			//set the window title
+			Assembly ass = Assembly.GetExecutingAssembly ();
+			this.Title = "TinyCalc " + FileVersionInfo.GetVersionInfo (ass.Location).FileVersion;
+
 			this.History = new History (); 
 			this.HistoryIndex = -1;
 
@@ -168,7 +173,7 @@ namespace TinyCalc.Views {
 
 		private void HandleUp () {
 			//if there's something in autocomplete
-			if (this.AutocompleteList.Count > 0) {
+			if (this.AutocompleteList.IsPopulated) {
 				//move the autocomplete index
 				if (this.AutocompleteList.SelectedIndex > 0) {
 					this.AutocompleteList.SelectedIndex--;
@@ -189,7 +194,7 @@ namespace TinyCalc.Views {
 
 		private void HandleDown () {
 			//if there's something in autocomplete
-			if (this.AutocompleteList.Count > 0) {
+			if (this.AutocompleteList.IsPopulated) {
 				//move the autocomplete index
 				if (this.AutocompleteList.SelectedIndex < this.AutocompleteList.Count - 1) {
 					this.AutocompleteList.SelectedIndex++;
@@ -212,8 +217,10 @@ namespace TinyCalc.Views {
 
 		private void InputPreviewKeyDowned (object sender, KeyEventArgs e) {
 			if (e.Key == Key.Up) {
+				e.Handled = true;
 				this.HandleUp ();
 			} else if (e.Key == Key.Down) {
+				e.Handled = true;
 				this.HandleDown ();
 			}
 		}
@@ -251,6 +258,9 @@ namespace TinyCalc.Views {
 			} else {  //if index is set
 				//set the input to the history item input
 				this.TxtInput.Text = this.History [this.HistoryIndex].Input;
+
+				//highlight all text
+				this.TxtInput.SelectAll ();
 			}
 			
 			//force each item in the display list to update its background
@@ -267,9 +277,6 @@ namespace TinyCalc.Views {
 					BindingOperations.GetMultiBindingExpression (grid, Grid.BackgroundProperty).UpdateTarget ();
 				}
 			}
-			
-			//highlight all text
-			this.TxtInput.SelectAll ();
 		}
 
 		private void WindowLocationChanged (object sender, EventArgs e) {
