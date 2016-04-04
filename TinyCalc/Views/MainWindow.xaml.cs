@@ -301,5 +301,9 @@ namespace TinyCalc.Views {
 			this.AutocompletePopup.HorizontalOffset++;
 			this.AutocompletePopup.HorizontalOffset--;
 		}
+
+		private void AutocompleteListBoxPreviewMouseDowned (object sender, RoutedEventArgs e) {
+			e.Handled = true;
+		}
 	}
 }

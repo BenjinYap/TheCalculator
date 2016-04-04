@@ -97,6 +97,7 @@
             <ListBox x:Name="AutocompleteListBox"
                      Grid.IsSharedSizeScope="True"
                      ItemsSource="{Binding AutocompleteList}"
+                     PreviewMouseDown="AutocompleteListBoxPreviewMouseDowned"
                      SelectedIndex="{Binding AutocompleteList.SelectedIndex}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
