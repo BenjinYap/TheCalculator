@@ -26,6 +26,8 @@ namespace TinyCalc.ViewModels {
 
 		private List <AutocompleteItem> allItems = new List <AutocompleteItem> ();
 
+		private bool isSuspended = false;
+
 		public AutocompleteList () {
 			this.SelectedIndex = -1;
 
@@ -47,8 +49,10 @@ namespace TinyCalc.ViewModels {
 		protected override void OnCollectionChanged (System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
 			base.OnCollectionChanged (e);
 			
-			//notify this property for the lovely front end
-			this.OnPropertyChanged (new PropertyChangedEventArgs ("IsPopulated"));
+			if (this.isSuspended == false) {
+				//notify this property for the lovely front end
+				this.OnPropertyChanged (new PropertyChangedEventArgs ("IsPopulated"));
+			}
 		}
 
 		public void Reset () {
@@ -68,8 +72,12 @@ namespace TinyCalc.ViewModels {
 		}
 
 		public void Populate (string token) {
+			this.isSuspended = true;
+
 			//reset the list
 			this.Reset ();
+
+			this.isSuspended = false;
 
 			//default selection
 			this.SelectedIndex = 0;
