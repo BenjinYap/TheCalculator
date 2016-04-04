@@ -92,6 +92,21 @@
                      Grid.IsSharedSizeScope="True"
                      ItemsSource="{Binding AutocompleteList}"
                      SelectedIndex="{Binding AutocompleteList.SelectedIndex}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="_Border"
+                                            BorderBrush="Red"
+                                            Background="Orange">
+                                        <ContentPresenter></ContentPresenter>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
