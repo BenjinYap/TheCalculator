@@ -11,6 +11,7 @@ namespace TinyCalc.Models.Modules {
 		private const string Multiplication = "*";
 		private const string Division = "/";
 		private const string Exponent = "^";
+		private const string Modulus = "%";
 
 		private readonly List <string> tokens;
 
@@ -23,6 +24,7 @@ namespace TinyCalc.Models.Modules {
 				OperatorModule.Multiplication,
 				OperatorModule.Division,
 				OperatorModule.Exponent,
+				OperatorModule.Modulus,
 			};
 		}
 
@@ -63,6 +65,7 @@ namespace TinyCalc.Models.Modules {
 				new List <string> {  //second level of precedence
 					OperatorModule.Multiplication,
 					OperatorModule.Division,
+					OperatorModule.Modulus,
 				},
 				new List <string> {  //thid level of precedence
 					OperatorModule.Negation,
@@ -115,6 +118,8 @@ namespace TinyCalc.Models.Modules {
 					return n1 * n2;
 				case OperatorModule.Division:
 					return n1 / n2;
+				case OperatorModule.Modulus:
+					return n1 % n2;
 				case OperatorModule.Exponent:
 					return Math.Pow (n1, n2);
 			}
