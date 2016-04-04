@@ -4,6 +4,7 @@
         xmlns:str="clr-namespace:TinyCalc.Localization"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:views="clr-namespace:TinyCalc.Views"
+        xmlns:viewModels="clr-namespace:TinyCalc.ViewModels"
         LocationChanged="WindowLocationChanged"
         ResizeMode="NoResize"
         x:Name="Window"
@@ -106,12 +107,25 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                                     <Border x:Name="_Border">
+                                        <Border.Style>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static viewModels:AutocompleteItemType.Constant}">
+                                                        <Setter Property="Background" Value="#f7ffb8"></Setter>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static viewModels:AutocompleteItemType.Function}">
+                                                        <Setter Property="Background" Value="#ceffc9"></Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+
                                         <ContentPresenter></ContentPresenter>
                                     </Border>
                                     
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="_Border" Property="Background" Value="LightGray"></Setter>
+                                            <Setter TargetName="_Border" Property="Background" Value="#74d3ff"></Setter>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>

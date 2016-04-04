@@ -37,13 +37,13 @@ namespace TinyCalc.ViewModels {
 			List <string> tokens = new FunctionModule ().GetTokens ();
 
 			foreach (string token in tokens) {
-				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Function, token, Autocomplete.ResourceManager.GetString (token)));
+				this.allItems.Add (new AutocompleteItem (AutocompleteItemType.Function, token, Autocomplete.ResourceManager.GetString (token)));
 			}
 
 			tokens = new ConstantModule ().GetTokens ();
 
 			foreach (string token in tokens) {
-				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, Autocomplete.ResourceManager.GetString (token)));
+				this.allItems.Add (new AutocompleteItem (AutocompleteItemType.Constant, token, Autocomplete.ResourceManager.GetString (token)));
 			}
 
 			//sort by alpha
