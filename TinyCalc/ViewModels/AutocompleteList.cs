@@ -68,7 +68,11 @@ namespace TinyCalc.ViewModels {
 		}
 
 		public void Populate (string token) {
+			//reset the list
 			this.Reset ();
+
+			//default selection
+			this.SelectedIndex = 0;
 
 			//if token is empty, show the master list
 			if (string.IsNullOrWhiteSpace (token)) {
