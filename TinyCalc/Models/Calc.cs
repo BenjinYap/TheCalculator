@@ -78,10 +78,21 @@ namespace TinyCalc.Models {
 					} else if (this.operatorr.IsToken (tokens [nonNumberIndex])) {  //if token is something other than negation
 						//solve it, remove the tokens from list, insert output in place
 						int i = nonNumberIndex;
+
+						//if first operator is out of bounds, then syntax error
+						if (i - 2 < 0) {
+							return new CalcResult (CalcError.SyntaxError);
+						}
+
 						double result = this.operatorr.Solve (tokens [i - 2], tokens [i - 1], tokens [i]);
 						tokens.RemoveRange (i - 2, 3);
 						tokens.Insert (i - 2, result.ToString ());
 					} else if (this.function.IsToken (tokens [nonNumberIndex])) {  //if token is a function
+						//if parameter is out of bounds, then syntax error
+						if (nonNumberIndex - 1 < 0) {
+							return new CalcResult (CalcError.SyntaxError);
+						}
+
 						//solve it, remove the tokens from list, insert output in place
 						double result = this.function.Solve (tokens [nonNumberIndex - 1], tokens [nonNumberIndex]);
 						tokens.RemoveRange (nonNumberIndex - 1, 2);

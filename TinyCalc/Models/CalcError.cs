@@ -6,6 +6,7 @@ namespace TinyCalc.Models {
 		Unknown,
 		InfiniteLoop,
 		UnknownToken,
+		SyntaxError,
 
 		MissingLeftBracket,
 		MissingRightBracket,

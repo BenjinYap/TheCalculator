@@ -21,6 +21,9 @@ namespace TinyCalc {
 
 			BadAssert ("pia", CalcError.UnknownToken, "pia");
 
+			BadAssert ("*", CalcError.SyntaxError);
+			BadAssert ("abs()", CalcError.SyntaxError);
+
 			Assert ("abs(5)", 5);
 			Assert ("-abs(-5)", -5);
 
