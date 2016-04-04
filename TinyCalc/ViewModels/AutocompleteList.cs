@@ -34,6 +34,12 @@ namespace TinyCalc.ViewModels {
 				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Function, token, token));
 			}
 
+			tokens = new ConstantModule ().GetTokens ();
+
+			foreach (string token in tokens) {
+				this.allItems.Add (new AutocompleteItem (AutoCompleteItemType.Constant, token, token));
+			}
+
 			this.Add (this.allItems [0]);
 			this.Add (this.allItems [1]);
 			this.Add (this.allItems [2]);
