@@ -61,7 +61,7 @@ namespace TinyCalc.Views {
 		public MainWindow () {
 			//set the window title
 			Assembly ass = Assembly.GetExecutingAssembly ();
-			this.Title = "TinyCalc " + FileVersionInfo.GetVersionInfo (ass.Location).FileVersion;
+			this.Title = string.Format ("TinyCalc {0}, {1}", FileVersionInfo.GetVersionInfo (ass.Location).FileVersion, Strings.ByMe);
 
 			this.History = new History (); 
 			this.HistoryIndex = -1;

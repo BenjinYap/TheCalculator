@@ -61,6 +61,15 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to by Benjin Yap, on GitHub.
+        /// </summary>
+        public static string ByMe {
+            get {
+                return ResourceManager.GetString("ByMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Equation (Ctrl+Space for autocomplete).
         /// </summary>
         public static string Equation {
