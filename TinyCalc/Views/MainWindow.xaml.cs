@@ -58,6 +58,9 @@ namespace TinyCalc.Views {
 
 		private int previousInputLength = 0;
 
+		private string currentInput = "";
+		private int currentCaretIndex = 0;
+
 		public MainWindow () {
 			//set the window title
 			Assembly ass = Assembly.GetExecutingAssembly ();
@@ -197,6 +200,10 @@ namespace TinyCalc.Views {
 			} else {  //nothing in autocomplete
 				//if index has not moved
 				if (this.HistoryIndex <= -1) {
+					//remember the current input incase user wants to come back
+					this.currentInput = this.TxtInput.Text;
+					this.currentCaretIndex = this.TxtInput.CaretIndex;
+
 					//set index to bottom
 					this.HistoryIndex = this.History.Count - 1;
 				} else if (this.HistoryIndex > 0) {  //if index has moved and isn't at the top
@@ -272,9 +279,10 @@ namespace TinyCalc.Views {
 		}
 
 		private void SelectHistoryItem () {
-			//if index isn't set, clear input
+			//if index isn't set, set input to previously saved input
 			if (this.HistoryIndex <= -1) {
-				this.TxtInput.Text = "";
+				this.TxtInput.Text = this.currentInput;
+				this.TxtInput.CaretIndex = this.currentCaretIndex;
 			} else {  //if index is set
 				//set the input to the history item input
 				this.TxtInput.Text = this.History [this.HistoryIndex].Input;
