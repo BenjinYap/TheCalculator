@@ -1,6 +1,8 @@
 # TinyCalc
 TinyCalc is a replacement for the default Windows calculator for those who prefer to only use their keyboard.
 
+This has only been tested on Windows 10 because I have no access to previous versions.
+
 ##Features
 
 ###Minimal
