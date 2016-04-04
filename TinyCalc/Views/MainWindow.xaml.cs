@@ -180,9 +180,8 @@ namespace TinyCalc.Views {
 
 			//if there was error
 			if (result.Error != CalcError.None) {
-				//set the textbox to be the original input and highlight it
+				//set the textbox to be the original input
 				this.TxtInput.Text = input;
-				this.TxtInput.SelectAll ();
 			}
 		}
 
@@ -278,8 +277,8 @@ namespace TinyCalc.Views {
 				//set the input to the history item input
 				this.TxtInput.Text = this.History [this.HistoryIndex].Input;
 
-				//highlight all text
-				this.TxtInput.SelectAll ();
+				//move caret to the end
+				this.TxtInput.CaretIndex = this.TxtInput.Text.Length;
 			}
 			
 			//force each item in the display list to update its background
