@@ -133,22 +133,28 @@
     <value>Inverse tangent</value>
   </data>
   <data name="cos" xml:space="preserve">
-    <value>Cosine</value>
+    <value>Cosine in radians</value>
   </data>
   <data name="cosh" xml:space="preserve">
     <value>Hyperbolic cosine</value>
   </data>
+  <data name="deg" xml:space="preserve">
+    <value>Convert radians to degrees</value>
+  </data>
   <data name="pi" xml:space="preserve">
     <value>3.14159...</value>
   </data>
+  <data name="rad" xml:space="preserve">
+    <value>Convert degrees to radians</value>
+  </data>
   <data name="sin" xml:space="preserve">
-    <value>Sine</value>
+    <value>Sine in radians</value>
   </data>
   <data name="sinh" xml:space="preserve">
     <value>Hyperbolic sine</value>
   </data>
   <data name="tan" xml:space="preserve">
-    <value>Tangent</value>
+    <value>Tangent in radians</value>
   </data>
   <data name="tanh" xml:space="preserve">
     <value>Hyperbolic tangent</value>

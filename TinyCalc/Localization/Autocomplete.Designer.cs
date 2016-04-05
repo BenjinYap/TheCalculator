@@ -106,7 +106,7 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cosine.
+        ///   Looks up a localized string similar to Cosine in radians.
         /// </summary>
         public static string cos {
             get {
@@ -124,6 +124,15 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Convert radians to degrees.
+        /// </summary>
+        public static string deg {
+            get {
+                return ResourceManager.GetString("deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 3.14159....
         /// </summary>
         public static string pi {
@@ -133,7 +142,16 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sine.
+        ///   Looks up a localized string similar to Convert degrees to radians.
+        /// </summary>
+        public static string rad {
+            get {
+                return ResourceManager.GetString("rad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sine in radians.
         /// </summary>
         public static string sin {
             get {
@@ -151,7 +169,7 @@ namespace TinyCalc.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tangent.
+        ///   Looks up a localized string similar to Tangent in radians.
         /// </summary>
         public static string tan {
             get {
