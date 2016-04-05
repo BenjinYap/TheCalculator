@@ -24,6 +24,11 @@ namespace TinyCalc {
 			BadAssert ("*", CalcError.SyntaxError);
 			BadAssert ("abs()", CalcError.SyntaxError);
 
+			Assert ("sin(rad(90))", 1);
+			Assert ("sin(rad(270))", -1);
+			Assert ("deg(asin(1))", 90);
+			Assert ("deg(asin(-1))", -90);
+
 			Assert ("abs(5)", 5);
 			Assert ("-abs(-5)", -5);
 

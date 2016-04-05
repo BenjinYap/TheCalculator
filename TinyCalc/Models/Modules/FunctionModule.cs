@@ -5,7 +5,11 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 namespace TinyCalc.Models.Modules {
 	public class FunctionModule:IModule {
+		private const string ToRadians = "rad";
+		private const string ToDegrees = "deg";
+
 		private const string AbsoluteValue = "abs";
+
 		private const string Sin = "sin";
 		private const string Cos = "cos";
 		private const string Tan = "tan";
@@ -20,7 +24,11 @@ namespace TinyCalc.Models.Modules {
 
 		public FunctionModule () {
 			this.tokens = new List <string> {
+				FunctionModule.ToRadians,
+				FunctionModule.ToDegrees,
+
 				FunctionModule.AbsoluteValue,
+
 				FunctionModule.Sinh,
 				FunctionModule.Cosh,
 				FunctionModule.Tanh,
@@ -65,6 +73,10 @@ namespace TinyCalc.Models.Modules {
 			double n = double.Parse (num);
 
 			switch (func) {
+				case FunctionModule.ToRadians:
+					return n * Math.PI / 180;
+				case FunctionModule.ToDegrees:
+					return n * 180 / Math.PI;
 				case FunctionModule.AbsoluteValue:
 					return Math.Abs (n);
 				case FunctionModule.Sin:

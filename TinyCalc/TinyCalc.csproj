@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{920F33F3-45DC-4810-996A-B935CF7CDA67}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TinyCalc</RootNamespace>
     <AssemblyName>TinyCalc</AssemblyName>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>TinyCalc.App</StartupObject>
+    <StartupObject>TinyCalc.UnitTest2</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources/icon.ico</ApplicationIcon>
