@@ -16,3 +16,6 @@ The calculator stores and displays a history of previous calculations for refere
 
 ###Autocomplete
 Since there are no buttons, autocomplete is a way to hint to users what functions and constants are available for use. Autocomplete appears whenever you change the equation. Use `Ctrl + Space` to force open the autocomplete list.
+
+###Additional Functions
+The calculator also supports further math functions such as minimum and maximum. In theory I can implement any arbritrary function as long as the parsersupports the format.
